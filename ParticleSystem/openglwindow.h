@@ -1,6 +1,7 @@
+#include "particlemanager.h"
+
 #include <QtGui/QWindow>
 #include <QtGui/QOpenGLFunctions>
-
 class QPainter;
 class QOpenGLContext;
 class QOpenGLPaintDevice;
@@ -13,9 +14,9 @@ public:
     ~OpenGLWindow();
 
     virtual void render(QPainter *painter);
-    virtual void render();
+    virtual void render(ParticleManager &particleManager);
 
-    virtual void initialize();
+    virtual void initialize(ParticleManager &ParticleManager);
 
     void setAnimating(bool animating);
 

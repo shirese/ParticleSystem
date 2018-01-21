@@ -100,7 +100,7 @@ void CLManager::computeMemory(  ParticleManager &particleManager)
     int err;
 
     printf("Allocating buffers on compute device.\n");
-    m_bufferVBO = cl::BufferGL(m_context, CL_MEM_READ_WRITE, particleManager.getVBO(), &err);
+    m_bufferVBO = cl::BufferGL(m_context, CL_MEM_READ_WRITE, particleManager.m_vbo, &err);
     if (err < 0)
     {
         printf("Couldn't create a buffer object from the VBO.");

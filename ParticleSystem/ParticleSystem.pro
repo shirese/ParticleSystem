@@ -18,6 +18,7 @@ HEADERS += \
     openglwindow.h \
     cl.hpp \
     clmanager.h \
+    particlemanager.h \
     particlesystemwindow.h \
     utils.h \
     shader.h \

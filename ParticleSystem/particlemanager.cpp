@@ -2,6 +2,8 @@
 #include "shader.h"
 #include "utils.h"
 
+ParticleManager::~ParticleManager(){ }
+
 void ParticleManager::renderParticles()
 {
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -12,7 +14,7 @@ void ParticleManager::renderParticles()
     // glBindVertexArray(0);
 }
 
-void ParticleManager::generateBuffers()
+void ParticleManager::generateBuffers(GLuint posAttr, GLuint colAttr)
 {
    GLenum err;
 
@@ -28,10 +30,10 @@ void ParticleManager::generateBuffers()
     glBufferData(GL_ARRAY_BUFFER, (GLuint)PARTICLES_COUNT * sizeof(Particle), nullptr, GL_STREAM_DRAW);
 
     // Access vertices in memory
-    glVertexAttribPointer(ParticleSysWindow::m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glVertexAttribPointer(ParticleSysWindow::m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ParticleSysWindow::m_posAttr);
-    glEnableVertexAttribArray(ParticleSysWindow::m_colAttr);
+    glVertexAttribPointer(posAttr, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glVertexAttribPointer(colAttr, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(posAttr);
+    glEnableVertexAttribArray(colAttr);
 
     // Unblock VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -48,16 +50,6 @@ void ParticleManager::generateBuffers()
 float *ParticleManager::getGravityCenter(void)
 {
     return m_gravityCenter;
-}
-
-GLuint ParticleManager::getVAO(void)
-{
-    return m_vao;
-}
-
-GLuint ParticleManager::getVBO(void)
-{
-    return m_vbo;
 }
 
 void ParticleManager::setGravityCenter(QVector3D pos)

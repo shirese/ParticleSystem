@@ -13,7 +13,6 @@
 #include <QtGui/QScreen>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
-#include <QVector3D>
 
 #include <QtCore/qmath.h>
 
@@ -23,56 +22,23 @@
 
 #endif
 
-class ParticleManager;
 class ParticleSysWindow : public OpenGLWindow
 {
-    friend ParticleManager;
-
     public:
         ParticleSysWindow();
-        void initialize();
-        void render();
+
+        void initialize(ParticleManager &particleManager) override;
+        void render(ParticleManager &particleManager) override;
 
     protected:
-        static GLuint m_posAttr;
-        static GLuint m_colAttr;
+        GLuint m_posAttr;
+        GLuint m_colAttr;
         GLuint m_matrixUniform;
 
     private:
         int m_frame;
         QOpenGLShaderProgram* m_program;
         
-};
-
-class ParticleManager
-{
-    friend ParticleSysWindow;
-
-    public:
-        static ParticleManager& getInstance()
-        {
-            static ParticleManager instance;
-            return instance;
-        }
-        float *getGravityCenter();
-        GLuint getMatUniform();
-        GLuint getVAO();
-        GLuint getVBO();
-        void generateBuffers();
-        void setGravityCenter(QVector3D pos);
-        void setParticleColor(float x, float y);
-        void renderParticles();
-
-    protected:
-        unsigned int m_nbParticles;
-        float *m_gravityCenter;
-        GLuint m_vao, m_vbo;
-
-    private:
-        ParticleManager() {};
-        ParticleManager(ParticleManager const&);
-        void operator=(ParticleManager const&);
-
 };
 
 #endif // PARTICLESYSTEMWINDOW_H

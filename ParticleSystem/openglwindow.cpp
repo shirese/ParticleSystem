@@ -1,5 +1,4 @@
 #include "openglwindow.h"
-
 #include <QtCore/QCoreApplication>
 
 #include <QtGui/QOpenGLContext>
@@ -19,16 +18,17 @@ OpenGLWindow::~OpenGLWindow()
 {
     delete m_device;
 }
+
 void OpenGLWindow::render(QPainter *painter)
 {
     Q_UNUSED(painter);
 }
 
-void OpenGLWindow::initialize()
+void OpenGLWindow::initialize(ParticleManager &ParticleManager)
 {
 }
 
-void OpenGLWindow::render()
+void OpenGLWindow::render(ParticleManager &particleManager)
 {
     if (!m_device)
         m_device = new QOpenGLPaintDevice;
@@ -67,6 +67,8 @@ void OpenGLWindow::exposeEvent(QExposeEvent *event)
 
 void OpenGLWindow::renderNow()
 {
+    ParticleManager particleManager;
+
     if (!isExposed())
         return;
 
@@ -84,10 +86,10 @@ void OpenGLWindow::renderNow()
 
     if (needsInitialize) {
         initializeOpenGLFunctions();
-        initialize();
+        initialize(particleManager);
     }
 
-    render();
+    render(particleManager);
 
     m_context->swapBuffers(this);
 

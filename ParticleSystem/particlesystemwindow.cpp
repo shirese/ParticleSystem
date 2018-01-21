@@ -1,14 +1,11 @@
 #include "particlesystemwindow.h"
 
-GLuint ParticleSysWindow::m_posAttr;
-GLuint ParticleSysWindow::m_colAttr;
-
 ParticleSysWindow::ParticleSysWindow()
     :   m_frame(0)
 {
 }
 
-void ParticleSysWindow::initialize()
+void ParticleSysWindow::initialize(ParticleManager &particleManager)
 {
     std::string vertexShaderSource, fragmentShaderSource;
 
@@ -25,10 +22,10 @@ void ParticleSysWindow::initialize()
     m_posAttr = m_program->attributeLocation("posAttr");
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
-    ParticleManager::getInstance().generateBuffers();
+    particleManager.generateBuffers(m_posAttr, m_colAttr);
 }
 
-void ParticleSysWindow::render()
+void ParticleSysWindow::render(ParticleManager &particleManager)
 {
     GLuint err;
     const qreal retinaScale = devicePixelRatio();
@@ -44,14 +41,14 @@ void ParticleSysWindow::render()
     matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
     m_program->setUniformValue(m_matrixUniform, matrix);
 
-    glBindVertexArray(ParticleManager::getInstance().m_vbo);
+    glBindVertexArray(particleManager.m_vbo);
     glDrawArrays(GL_POINT, 0, PARTICLES_COUNT);
+    glBindVertexArray(0);
 
     err = glGetError();
     if (err != GL_NO_ERROR)
         printf("Error: OpenGL Get Error: %d\n", err);
     m_program->release();
-    glBindVertexArray(0);
 
     ++m_frame;
 }

@@ -1,6 +1,5 @@
 #include "clmanager.h"
 #include "particlesystemwindow.h"
-#include "particlesystemwindow.h"
 #include "utils.h"
 
 int main(int argc, char **argv)
