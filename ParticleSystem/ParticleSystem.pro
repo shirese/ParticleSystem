@@ -25,5 +25,8 @@ HEADERS += \
     particle.h \
 
 LIBS += -F/System/Library/Frameworks/OpenCL.framework/
+LIBS += -framework Cocoa
+LIBS += -framework IOKit
+LIBS += -framework CoreVideo
 LIBS += -framework OpenCL
 LIBS += -framework OpenGL

@@ -1,41 +1,14 @@
 #define SPHERE_RADIUS	1.5f
 
-void kernel initialize_sphere(__global Particle *particles)
+void kernel initialize_sphere(__global vec3 pos)
 {
 	int i = get_global_id(0);
-	if (i == 0)
-	{
-		particles[i].position.x = 0.0f;
-		particles[i].position.y = 0.5f;
-		particles[i].position.z = 0.0f;
-		// particles[i].color.x = 1.0f;
-		// particles[i].color.y = 0.0f;
-		// particles[i].color.z = 0.0f;
-	}
-	else if (i == 1)
-	{
-		particles[i].position.x = 0.5f;
-		particles[i].position.y = -0.5f;
-		particles[i].position.z = 0.0f;
-		// particles[i].color.x = 0.0f;
-		// particles[i].color.y = 1.0f;
-		// particles[i].color.z = 0.0f;
-	}
-	else if (i == 2)
-	{
-		particles[i].position.x = -0.5f;
-		particles[i].position.y = -0.5f;
-		particles[i].position.z = 0.0f;
-		// particles[i].color.x = 0.0f;
-		// particles[i].color.y = 0.0f;
-		// particles[i].color.z = 1.0f;
-	}
 	//float phi = ( sqrt(5.f) + 1.f ) / 2.f - 1.f; // golden ratio
 	//float ga = phi * 2.f * M_PI;
-	// float ga = M_PI * (3. - sqrt(5.));
-	// float theta = ga * (float)i;
-	// float z = ( 1. - (1. / (float)PARTICLES_COUNT) ) * ( 1. - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1. ) ) );
-	// float radius = sqrt(1. - z * z);
+	float ga = M_PI * (3. - sqrt(5.));
+	float theta = ga * (float)i;
+	float z = ( 1. - (1. / (float)PARTICLES_COUNT) ) * ( 1. - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1. ) ) );
+	float radius = sqrt(1. - z * z);
 	/*uint	subDivCount = cbrt((float)PARTICLES_COUNT);
 	float2	delta = (float2)(M_PI * 2 / subDivCount, M_PI / subDivCount);
 	float	radiusDelta = SPHERE_RADIUS / subDivCount;
@@ -66,11 +39,8 @@ void kernel initialize_sphere(__global Particle *particles)
 	particles[i].position.y = SPHERE_RADIUS * cos(lat) * sin(lon);
 	particles[i].position.z = SPHERE_RADIUS * sin(lat);*/
 
-	// particles[i].position.x = radius * cos(theta);
-	// particles[i].position.y = radius * sin(theta);
-	// particles[i].position.z = z;
-	// particles[i].position.x += 0.;
-	// particles[i].position.y = 0.f;
-	// particles[i].position.z = 0.f;
+	particles[i].position.x = radius * cos(theta);
+	particles[i].position.y = radius * sin(theta);
+	particles[i].position.z = z;
 	//printf("%f %f %f\n", particles[i].position.x, particles[i].position.y, particles[i].position.z);
 }

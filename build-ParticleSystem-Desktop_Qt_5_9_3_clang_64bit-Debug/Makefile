@@ -38,7 +38,7 @@ DISTNAME      = name_of_the_app1.0.0
 DISTDIR = /Users/chaueur/ParticleSystem/build-ParticleSystem-Desktop_Qt_5_9_3_clang_64bit-Debug/.tmp/name_of_the_app1.0.0
 LINK          = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 LFLAGS        = -stdlib=libc++ -headerpad_max_install_names $(EXPORT_ARCH_ARGS) -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wl,-rpath,@executable_path/Frameworks -Wl,-rpath,/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib
-LIBS          = $(SUBLIBS) -F/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib -F/System/Library/Frameworks/OpenCL.framework/ -framework OpenCL -framework OpenGL -framework QtWidgets -framework QtGui -framework QtCore -framework DiskArbitration -framework IOKit -framework AGL 
+LIBS          = $(SUBLIBS) -F/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib -F/System/Library/Frameworks/OpenCL.framework/ -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenCL -framework OpenGL -framework QtWidgets -framework QtGui -framework QtCore -framework DiskArbitration -framework AGL 
 AR            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar cq
 RANLIB        = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib -s
 SED           = sed
@@ -255,6 +255,7 @@ DIST          = /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/featur
 		../ParticleSystem/ParticleSystem.pro ../ParticleSystem/openglwindow.h \
 		../ParticleSystem/cl.hpp \
 		../ParticleSystem/clmanager.h \
+		../ParticleSystem/particlemanager.h \
 		../ParticleSystem/particlesystemwindow.h \
 		../ParticleSystem/utils.h \
 		../ParticleSystem/shader.h \
@@ -692,7 +693,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../ParticleSystem/openglwindow.h ../ParticleSystem/cl.hpp ../ParticleSystem/clmanager.h ../ParticleSystem/particlesystemwindow.h ../ParticleSystem/utils.h ../ParticleSystem/shader.h ../ParticleSystem/particle.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../ParticleSystem/openglwindow.h ../ParticleSystem/cl.hpp ../ParticleSystem/clmanager.h ../ParticleSystem/particlemanager.h ../ParticleSystem/particlesystemwindow.h ../ParticleSystem/utils.h ../ParticleSystem/shader.h ../ParticleSystem/particle.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../ParticleSystem/main.cpp ../ParticleSystem/openglwindow.cpp ../ParticleSystem/clmanager.cpp ../ParticleSystem/particlemanager.cpp ../ParticleSystem/utils.cpp ../ParticleSystem/shader.cpp ../ParticleSystem/particle.cpp ../ParticleSystem/particlesystemwindow.cpp $(DISTDIR)/
 
 
@@ -728,7 +729,15 @@ moc_predefs.h: /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/feature
 compiler_moc_header_make_all: moc_openglwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_openglwindow.cpp
-moc_openglwindow.cpp: ../ParticleSystem/openglwindow.h \
+moc_openglwindow.cpp: ../ParticleSystem/clmanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qopenglfunctions.h \
+		../ParticleSystem/cl.hpp \
+		../ParticleSystem/particle.h \
+		../ParticleSystem/particlemanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
+		../ParticleSystem/openglwindow.h \
 		moc_predefs.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/bin/moc
 	/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/macx-clang -I/Users/chaueur/ParticleSystem/ParticleSystem -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/usr/include -F/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib ../ParticleSystem/openglwindow.h -o moc_openglwindow.cpp
@@ -750,38 +759,53 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 ####### Compile
 
 main.o: ../ParticleSystem/main.cpp ../ParticleSystem/clmanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qopenglfunctions.h \
 		../ParticleSystem/cl.hpp \
+		../ParticleSystem/particle.h \
+		../ParticleSystem/particlemanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
 		../ParticleSystem/particlesystemwindow.h \
 		../ParticleSystem/openglwindow.h \
-		../ParticleSystem/particle.h \
 		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h \
-		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
-		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h
+		../ParticleSystem/utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ParticleSystem/main.cpp
 
-openglwindow.o: ../ParticleSystem/openglwindow.cpp ../ParticleSystem/openglwindow.h
+openglwindow.o: ../ParticleSystem/openglwindow.cpp ../ParticleSystem/openglwindow.h \
+		../ParticleSystem/clmanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qopenglfunctions.h \
+		../ParticleSystem/cl.hpp \
+		../ParticleSystem/particle.h \
+		../ParticleSystem/particlemanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o openglwindow.o ../ParticleSystem/openglwindow.cpp
 
 clmanager.o: ../ParticleSystem/clmanager.cpp ../ParticleSystem/clmanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qopenglfunctions.h \
 		../ParticleSystem/cl.hpp \
-		../ParticleSystem/particlesystemwindow.h \
-		../ParticleSystem/openglwindow.h \
 		../ParticleSystem/particle.h \
-		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h \
+		../ParticleSystem/particlemanager.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
-		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
+		../ParticleSystem/utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o clmanager.o ../ParticleSystem/clmanager.cpp
 
 particlemanager.o: ../ParticleSystem/particlemanager.cpp ../ParticleSystem/particlesystemwindow.h \
 		../ParticleSystem/openglwindow.h \
-		../ParticleSystem/particle.h \
+		../ParticleSystem/clmanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qopenglfunctions.h \
 		../ParticleSystem/cl.hpp \
-		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h \
+		../ParticleSystem/particle.h \
+		../ParticleSystem/particlemanager.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
-		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
+		../ParticleSystem/shader.h \
+		../ParticleSystem/utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o particlemanager.o ../ParticleSystem/particlemanager.cpp
 
 utils.o: ../ParticleSystem/utils.cpp ../ParticleSystem/utils.h
@@ -796,12 +820,16 @@ particle.o: ../ParticleSystem/particle.cpp ../ParticleSystem/particle.h \
 
 particlesystemwindow.o: ../ParticleSystem/particlesystemwindow.cpp ../ParticleSystem/particlesystemwindow.h \
 		../ParticleSystem/openglwindow.h \
-		../ParticleSystem/particle.h \
+		../ParticleSystem/clmanager.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qopenglfunctions.h \
 		../ParticleSystem/cl.hpp \
-		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h \
+		../ParticleSystem/particle.h \
+		../ParticleSystem/particlemanager.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QVector3D \
-		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
+		../ParticleSystem/shader.h \
+		../ParticleSystem/utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o particlesystemwindow.o ../ParticleSystem/particlesystemwindow.cpp
 
 moc_openglwindow.o: moc_openglwindow.cpp 

@@ -10,7 +10,7 @@ void kernel update_position(__global Particle *particles, __global float3 *gravi
 	dy = gravityCenter->y - particles[i].position.y;
 	dz = gravityCenter->z - particles[i].position.z;
 	dist = sqrt(dx * dx + dy * dy + dz * dz);
-	/*if (dist >= minGravityDist) {
+	if (dist >= minGravityDist) {
 		dx /= dist;
 		dy /= dist;
 		dz /= dist;
@@ -20,5 +20,5 @@ void kernel update_position(__global Particle *particles, __global float3 *gravi
 		particles[i].velocity.z = dz * force / 1.;
 		normalize(particles[i].velocity);
 		particles[i].position += particles[i].velocity;
-	}*/
+	}
 }

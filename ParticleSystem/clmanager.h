@@ -1,10 +1,17 @@
 #ifndef CLMANAGER_H
 #define CLMANAGER_H
 
+#define CL_CGL_SHAREGROUP_KHR 0x200C
+
+#include <OpenGL/CGLCurrent.h>
+#include <QOpenGLBuffer>
+#include <QOpenGLFunctions>
 #include "cl.hpp"
-#include "particlesystemwindow.h"
+#include "particle.h"
 
 #include <iostream>
+
+#pragma OPENCL EXTENSION CL_APPLE_gl_sharing : enable
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -19,15 +26,29 @@
 class CLManager
 {
     public:
-        CLManager();
-        void computeMemory(ParticleManager &particleManager);
+        static CLManager& getInstance()
+        {
+            static CLManager instance;
+
+            return instance;
+        };
+        void initCL(QOpenGLContext *glContext);
+        void computeMemory(QOpenGLBuffer &posVBO);
+        void runUpdateKernel(float *gravityPoint);
+        void runInitKernel();
 
     private:
-        cl::Context     m_context;
-        cl::Kernel      m_initKernel;
-        cl::Kernel      m_updateKernel;
-        cl::Buffer      m_bufferGravity;
-        cl::BufferGL    m_bufferVBO;
+        CLManager(){};
+        CLManager(CLManager const &);
+        void operator=(CLManager const &);
+        cl::CommandQueue        m_cmdQueue;
+        cl::Context             m_context;
+        cl::Kernel              m_initKernel;
+        cl::Kernel              m_updateKernel;
+        cl::Buffer              m_bufferGravity;
+        cl::BufferGL            m_bufferVBO;
+        std::vector<cl::Memory> m_vbos;
+        size_t                  m_maxWorkGroupSize;
 };
 
 #endif // CLMANAGER_H

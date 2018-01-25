@@ -1,3 +1,4 @@
+#include "clmanager.h"
 #include "particlemanager.h"
 
 #include <QtGui/QWindow>
@@ -14,9 +15,9 @@ public:
     ~OpenGLWindow();
 
     virtual void render(QPainter *painter);
-    virtual void render(ParticleManager &particleManager);
+    virtual void render(ParticleManager &particleManager, CLManager &clManager);
 
-    virtual void initialize(ParticleManager &ParticleManager);
+    virtual void initialize(ParticleManager &ParticleManager, CLManager &clManager);
 
     void setAnimating(bool animating);
 
@@ -26,12 +27,11 @@ public slots:
 
 protected:
     bool event(QEvent *event) override;
-
     void exposeEvent(QExposeEvent *event) override;
+    QOpenGLContext *m_context;
 
 private:
     bool m_animating;
 
-    QOpenGLContext *m_context;
     QOpenGLPaintDevice *m_device;
 };

@@ -1,8 +1,6 @@
 #ifndef PARTICLESYSTEMWINDOW_H
 #define PARTICLESYSTEMWINDOW_H
 
-#define PARTICLES_COUNT 1024000
-
 #include "openglwindow.h"
 #include "particle.h"
 #include "shader.h"
@@ -27,8 +25,8 @@ class ParticleSysWindow : public OpenGLWindow
     public:
         ParticleSysWindow();
 
-        void initialize(ParticleManager &particleManager) override;
-        void render(ParticleManager &particleManager) override;
+        void initialize(ParticleManager &particleManager, CLManager &clManager) override;
+        void render(ParticleManager &particleManager, CLManager &clManager) override;
 
     protected:
         GLuint m_posAttr;
@@ -38,7 +36,8 @@ class ParticleSysWindow : public OpenGLWindow
     private:
         int m_frame;
         QOpenGLShaderProgram* m_program;
-        
+        QOpenGLBuffer m_colVBO, m_posVBO;
+        QOpenGLVertexArrayObject m_vao;
 };
 
 #endif // PARTICLESYSTEMWINDOW_H

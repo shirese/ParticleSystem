@@ -3,9 +3,12 @@
 
 #include <QtGui/QOpenGLFunctions>
 #include <QVector3D>
+#include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
 
 class ParticleManager
 {
+    friend class OpenGLWindow;
     friend class ParticleSysWindow;
     friend class CLManager;
 
@@ -20,9 +23,9 @@ class ParticleManager
 
     protected:
         unsigned int m_nbParticles;
-        float *m_gravityCenter;
-        GLuint m_vao, m_vbo;
-
+        float m_gravityCenter[3] = {0., 0., -1.};
+        QOpenGLBuffer m_colVBO, m_posVBO;
+        QOpenGLVertexArrayObject m_vao;
 };
 
 #endif

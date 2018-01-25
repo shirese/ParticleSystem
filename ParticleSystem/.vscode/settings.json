@@ -11,6 +11,10 @@
         "__string": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "__mutex_base": "cpp",
+        "memory": "cpp",
+        "__split_buffer": "cpp",
+        "vector": "cpp"
     }
 }

@@ -24,11 +24,11 @@ void OpenGLWindow::render(QPainter *painter)
     Q_UNUSED(painter);
 }
 
-void OpenGLWindow::initialize(ParticleManager &ParticleManager)
+void OpenGLWindow::initialize(ParticleManager &particleManager, CLManager &clManager)
 {
 }
 
-void OpenGLWindow::render(ParticleManager &particleManager)
+void OpenGLWindow::render(ParticleManager &particleManager, CLManager &clManager)
 {
     if (!m_device)
         m_device = new QOpenGLPaintDevice;
@@ -36,7 +36,6 @@ void OpenGLWindow::render(ParticleManager &particleManager)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     m_device->setSize(size());
-
     QPainter painter(m_device);
     render(&painter);
 }
@@ -67,7 +66,8 @@ void OpenGLWindow::exposeEvent(QExposeEvent *event)
 
 void OpenGLWindow::renderNow()
 {
-    ParticleManager particleManager;
+    ParticleManager     particleManager;
+    CLManager &clManager = CLManager::getInstance();
 
     if (!isExposed())
         return;
@@ -86,10 +86,12 @@ void OpenGLWindow::renderNow()
 
     if (needsInitialize) {
         initializeOpenGLFunctions();
-        initialize(particleManager);
+        clManager.initCL(m_context);
+        initialize(particleManager, clManager);
     }
-
-    render(particleManager);
+    // float test[3] = { 0., 0., 1.};
+    // clManager.runUpdateKernel(test);
+    render(particleManager, clManager);
 
     m_context->swapBuffers(this);
 
