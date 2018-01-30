@@ -5,6 +5,8 @@
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
 
+#include <QOpenGLWidget>
+
 OpenGLWindow::OpenGLWindow(QWindow *parent)
     : QWindow(parent)
     , m_animating(false)

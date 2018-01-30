@@ -15,6 +15,11 @@
         "__mutex_base": "cpp",
         "memory": "cpp",
         "__split_buffer": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "__functional_base": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp"
     }
 }

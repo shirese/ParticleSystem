@@ -5,4 +5,5 @@ typedef struct
 {
 	float3	position;
 	float3	color;
+	float3	velocity;
 }			Particle;

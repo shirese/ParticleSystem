@@ -168,7 +168,7 @@ void CLManager::runUpdateKernel(float *gravityPoint)
 
 	glFinish();
     m_vbos.push_back(m_bufferVBO);
-    printf("Running update kernel...\n");
+    // printf("Running update kernel...\n");
 
     // PARTICLES
     err = m_cmdQueue.enqueueAcquireGLObjects(&m_vbos, NULL, NULL);
@@ -228,8 +228,8 @@ void CLManager::runInitKernel()
 		exit(-1);
 	}
 
-	// size_t globalWorkSize = PARTICLES_COUNT;
-	size_t globalWorkSize = 1024;
+	size_t globalWorkSize = PARTICLES_COUNT;
+	// size_t globalWorkSize = 1024;
     err = m_cmdQueue.enqueueNDRangeKernel(m_initKernel, cl::NullRange, cl::NDRange(globalWorkSize), cl::NDRange(m_maxWorkGroupSize), nullptr, &event);
 	// err = clEnqueueNDRangeKernel(m_cmdQueue(), m_initKernel(), 1, nullptr, &globalWorkSize, &m_maxWorkGroupSize, 0, nullptr, &event());
 	if (err < 0)

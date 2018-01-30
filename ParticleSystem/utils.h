@@ -9,7 +9,9 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <QVector3D>
 
+float		*hit_plane(QVector3D vec, float d);
 std::string fileToString(const char *file_name);
 
 #endif // UTILS_H

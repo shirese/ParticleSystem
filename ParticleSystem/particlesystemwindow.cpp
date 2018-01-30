@@ -21,21 +21,7 @@ void ParticleSysWindow::initialize(ParticleManager &particleManager, CLManager &
     m_program->link();
     m_program->bind();
 
-    GLfloat vertices[] = {
-        0.0f,  0.5f,  0.0f,
-        0.5f, -0.5f,  0.0f,
-        -0.5f, -0.5f,  0.0f
-    };
-    GLfloat colors[] = {
-        1.0f, 0.0f,  0.0f,
-        0.0f, 1.0f,  0.0f,
-        0.0f, 0.0f,  1.0f,
-    };
-    // int sizeParticleBuffer = (GLuint)PARTICLES_COUNT * sizeof(Particle);
-    // int sizeParticleBuffer = 9 * sizeof(GLfloat);
-    int sizeParticleBuffer = 3 * sizeof(Particle);
-    // int sizeParticleBuffer = 3 * sizeof(Particle);
-    int sizeColorBuffer = 9 * sizeof(GLfloat);
+    int sizeParticleBuffer = (GLuint)PARTICLES_COUNT * sizeof(Particle);
     
     printf("Generate buffers.\n");
 
@@ -52,15 +38,12 @@ void ParticleSysWindow::initialize(ParticleManager &particleManager, CLManager &
     m_posVBO.allocate(sizeParticleBuffer);
     // m_posVBO.allocate(vertices, sizeParticleBuffer);
     m_program->enableAttributeArray( m_posAttr );
-    m_program->setAttributeBuffer( m_posAttr, GL_FLOAT, 0, 3, sizeof(Particle) );
-    // m_program->setAttributeBuffer( m_posAttr, GL_FLOAT, 0, PARTICLES_COUNT, sizeof(Particle) );
-    
-    m_colVBO.create();
-    m_colVBO.bind();
-    m_colVBO.setUsagePattern( QOpenGLBuffer::StreamDraw );
-    m_colVBO.allocate(colors, sizeColorBuffer);
+    // m_program->setAttributeBuffer( m_posAttr, GL_FLOAT, 0, 3, sizeof(Particle) );
     m_program->enableAttributeArray( m_colAttr );
-    m_program->setAttributeBuffer( m_colAttr, GL_FLOAT, 0, 3 );
+    m_program->setAttributeBuffer( m_posAttr, GL_FLOAT, 0, 3, sizeof(Particle) );
+    m_program->setAttributeBuffer( m_colAttr, GL_FLOAT, 1 * sizeof(cl_float3), 3, sizeof(Particle) );
+    
+    /////////////////////////// COLOR BUFFER ///////////////////////////////////
     // m_program->setAttributeBuffer( m_colAttr, GL_FLOAT, 0, 3 );
 
     m_matrixUniform = m_program->uniformLocation("matrix");
@@ -75,22 +58,37 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
     GLuint err;
     const qreal retinaScale = devicePixelRatio();
 
-    // clManager.runUpdateKernel(particleManager.m_gravityCenter);   
+    // float grav[3] = { x, y, -2 };
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
     glClear(GL_COLOR_BUFFER_BIT);
 
     m_program->bind();
 
-    QMatrix4x4 matrix;
-    matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f);
-    matrix.translate(0, 0, -2);
-    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
-    m_program->setUniformValue(m_matrixUniform, matrix);
+    // printf("{ %f %f %f }\n", gravityVec[0], gravityVec[1], gravityVec[2]);
+    QMatrix4x4 model;
+    model.setToIdentity();
+    QMatrix4x4 projection;
+    projection.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f);
+    projection.translate(0, 0, -2);
+    // projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    if (m_update)
+    {
+        if (m_followMouse)
+        {
+            m_gravityVec.setX(2.0 * x / width() * retinaScale - 1.0);
+            m_gravityVec.setY(1.0 - (2.0 * y) / height() * retinaScale);
+            m_gravityVec.setZ(0);
+        }
+        m_gravityVec.project(model, projection, QRect(0, 0, width() * retinaScale, height() * retinaScale));
+        float *grav = hit_plane(m_gravityVec, 2);
+        clManager.runUpdateKernel(grav);
+    }
+    m_program->setUniformValue(m_matrixUniform, projection);
 
     m_vao.bind();
     // glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_POINTS, 0, PARTICLES_COUNT);
     m_vao.release();
     // glBindVertexArray(particleManager.m_vao);
     // glBindVertexArray(0);
@@ -102,4 +100,23 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
     //     printf("Error: OpenGL Get Error: %d\n", err);
 
     ++m_frame;
+}
+
+void ParticleSysWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    x = event->x();
+    y = event->y();
+}
+
+void ParticleSysWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Space:
+            m_update = !m_update;
+        case Qt::Key_S:
+            m_followMouse = !m_followMouse;
+        default:
+            ;
+    }
 }

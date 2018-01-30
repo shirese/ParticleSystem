@@ -29,15 +29,22 @@ class ParticleSysWindow : public OpenGLWindow
         void render(ParticleManager &particleManager, CLManager &clManager) override;
 
     protected:
+        float x = 0, y = 0;
         GLuint m_posAttr;
         GLuint m_colAttr;
         GLuint m_matrixUniform;
+        void mouseMoveEvent(QMouseEvent *event);
+        void keyPressEvent(QKeyEvent *event);
 
     private:
         int m_frame;
+        bool m_update = false;
+        bool m_followMouse = true;
+        bool m_gravitySet = false;
         QOpenGLShaderProgram* m_program;
         QOpenGLBuffer m_colVBO, m_posVBO;
         QOpenGLVertexArrayObject m_vao;
+        QVector3D m_gravityVec;
 };
 
 #endif // PARTICLESYSTEMWINDOW_H

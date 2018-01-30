@@ -1,8 +1,12 @@
 #include "clmanager.h"
 #include "particlemanager.h"
 
+#include <QMainWindow>
 #include <QtGui/QWindow>
 #include <QtGui/QOpenGLFunctions>
+
+#include <QMouseEvent>
+
 class QPainter;
 class QOpenGLContext;
 class QOpenGLPaintDevice;
@@ -17,21 +21,21 @@ public:
     virtual void render(QPainter *painter);
     virtual void render(ParticleManager &particleManager, CLManager &clManager);
 
-    virtual void initialize(ParticleManager &ParticleManager, CLManager &clManager);
+    virtual void initialize(ParticleManager &particleManager, CLManager &clManager);
 
     void setAnimating(bool animating);
 
-public slots:
-    void renderLater();
-    void renderNow();
+    public slots:
+        void renderLater();
+        void renderNow();
 
-protected:
-    bool event(QEvent *event) override;
-    void exposeEvent(QExposeEvent *event) override;
-    QOpenGLContext *m_context;
+    protected:
+        bool event(QEvent *event) override;
+        void exposeEvent(QExposeEvent *event) override;
+        QOpenGLContext *m_context;
 
-private:
-    bool m_animating;
+    private:
+        bool m_animating;
 
-    QOpenGLPaintDevice *m_device;
+        QOpenGLPaintDevice *m_device;
 };

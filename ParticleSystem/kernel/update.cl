@@ -1,24 +1,28 @@
+float3 getParticleColor(float dist, float3 particlePosition)
+{
+	float3 color;
+
+	color.x = 1 - dist/4.;
+	color.y = 0.0;
+	color.z = dist/4.;
+	return (color);
+}
+
 void kernel update_position(__global Particle *particles, __global float3 *gravityCenter)
 {
 	int					i = get_global_id(0);
 	float				dist;
-	float				minGravityDist;
-	float				dx, dy, dz, force;
+	const float			minGravityDist = 0.25;
+	float3				dd;
+	float				force;
 
-	minGravityDist = 0.75;
-	dx = gravityCenter->x - particles[i].position.x;
-	dy = gravityCenter->y - particles[i].position.y;
-	dz = gravityCenter->z - particles[i].position.z;
-	dist = sqrt(dx * dx + dy * dy + dz * dz);
-	/*if (dist >= minGravityDist) {
-		dx /= dist;
-		dy /= dist;
-		dz /= dist;
-		force = G * ((1.f * 1.25) / (dist * dist));
-		particles[i].velocity.x = dx * force / 1.;
-		particles[i].velocity.y = dy * force / 1.;
-		particles[i].velocity.z = dz * force / 1.;
-		normalize(particles[i].velocity);
-		particles[i].position += particles[i].velocity;
-	}*/
+	dd = *gravityCenter - particles[i].position;
+	dist = distance(*gravityCenter, particles[i].position);
+	if (dist <= minGravityDist)
+		return ;
+	force = (G * 0.01 * 4) / (pow(dist, 2));
+	particles[i].velocity += dd * (float3)force;
+	particles[i].position += particles[i].velocity;
+	particles[i].color = getParticleColor(dist, particles[i].position);
+	particles[i].velocity *= 0.8f;
 }
