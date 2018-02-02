@@ -1,4 +1,5 @@
 #define PARTICLES_COUNT 1024000
+#define SQUARE_SIZE		1.0f
 #define G 9.81f
 
 typedef struct

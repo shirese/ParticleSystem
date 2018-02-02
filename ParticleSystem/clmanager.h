@@ -18,7 +18,7 @@
 #define KERNEL_MAIN						("/Users/chaueur/ParticleSystem/ParticleSystem/kernel/main.cl")
 #define KERNEL_HEADER					("/Users/chaueur/ParticleSystem/ParticleSystem/kernel/header.cl")
 #define KERNEL_UPDATE					("/Users/chaueur/ParticleSystem/ParticleSystem/kernel/update.cl")
-#define KERNEL_INIT_METHOD_NAME			("initialize_sphere")
+#define KERNEL_INIT_METHOD_NAME			("initialize")
 #define KERNEL_UPDATE_METHOD_NAME		("update_position")
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@ class CLManager
         void computeMemory(QOpenGLBuffer &posVBO);
         void runUpdateKernel(float *gravityPoint);
         void runInitKernel();
+        void setShape (short s) { m_shape = s; };
 
     private:
         CLManager(){};
@@ -45,9 +46,11 @@ class CLManager
         cl::Context             m_context;
         cl::Kernel              m_initKernel;
         cl::Kernel              m_updateKernel;
+        cl::Buffer              m_bufferShape;
         cl::Buffer              m_bufferGravity;
         cl::BufferGL            m_bufferVBO;
         std::vector<cl::Memory> m_vbos;
+        int                     m_shape = 0;
         size_t                  m_maxWorkGroupSize;
 };
 

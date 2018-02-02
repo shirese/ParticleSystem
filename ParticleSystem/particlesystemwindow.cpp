@@ -48,7 +48,8 @@ void ParticleSysWindow::initialize(ParticleManager &particleManager, CLManager &
 
     m_matrixUniform = m_program->uniformLocation("matrix");
     clManager.computeMemory(m_posVBO);
-    clManager.runInitKernel();    
+    clManager.setShape(m_initShape);
+    clManager.runInitKernel();
     // particleManager.generateBuffers(m_posAttr, m_colAttr);
     m_program->release();
 }
@@ -71,8 +72,15 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
     QMatrix4x4 projection;
     projection.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f);
     projection.translate(0, 0, -2);
-    // projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
-    if (m_update)
+    if (m_rotate)
+        projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    if (m_shapeUpdated)
+    {
+        clManager.setShape(m_initShape);
+        clManager.runInitKernel();
+        m_shapeUpdated = !m_shapeUpdated;
+    }
+    else if (m_update)
     {
         if (m_followMouse)
         {
@@ -82,6 +90,7 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
         }
         m_gravityVec.project(model, projection, QRect(0, 0, width() * retinaScale, height() * retinaScale));
         float *grav = hit_plane(m_gravityVec, 2);
+        printf("[0] %f %f %f\n", grav[0], grav[1], grav[2]);
         clManager.runUpdateKernel(grav);
     }
     m_program->setUniformValue(m_matrixUniform, projection);
@@ -114,8 +123,21 @@ void ParticleSysWindow::keyPressEvent(QKeyEvent *event)
     {
         case Qt::Key_Space:
             m_update = !m_update;
-        case Qt::Key_S:
+            break ;
+        case Qt::Key_C:
+            m_initShape = 1;
+            m_shapeUpdated = !m_shapeUpdated;
+            break ;
+        case Qt::Key_V:
+            m_initShape = 2;
+            m_shapeUpdated = !m_shapeUpdated;
+            break ;
+        case Qt::Key_F:
             m_followMouse = !m_followMouse;
+            break ;
+        case Qt::Key_R:
+            m_rotate = !m_rotate;
+            break ;
         default:
             ;
     }

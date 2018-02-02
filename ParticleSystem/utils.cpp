@@ -1,6 +1,5 @@
 #include "utils.h"
 
-
 float		*hit_plane(QVector3D origin, float d)
 {
     QVector3D direction(origin.x(), origin.y(), -1);

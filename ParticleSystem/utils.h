@@ -1,6 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <cstdlib>
 #include <cstddef>
 #include <fcntl.h>
 #include <fstream>

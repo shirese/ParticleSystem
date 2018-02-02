@@ -38,9 +38,12 @@ class ParticleSysWindow : public OpenGLWindow
 
     private:
         int m_frame;
+        int m_initShape = 1;
+        bool m_shapeUpdated = false;
         bool m_update = false;
         bool m_followMouse = true;
         bool m_gravitySet = false;
+        bool m_rotate = false;
         QOpenGLShaderProgram* m_program;
         QOpenGLBuffer m_colVBO, m_posVBO;
         QOpenGLVertexArrayObject m_vao;

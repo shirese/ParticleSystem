@@ -135,6 +135,12 @@ void CLManager::computeMemory(QOpenGLBuffer &posVBO)
         printf("Couldn't create a buffer object from the VBO.");
         exit(-1);
     }
+    m_bufferShape = cl::Buffer(m_context, CL_MEM_READ_ONLY, sizeof(int), NULL, &err);
+    if (err < 0)
+    {
+        printf("Couldn't create shape buffer.");
+        exit(-1);
+    }
     m_bufferGravity = cl::Buffer(m_context, CL_MEM_READ_ONLY, sizeof(float) * 3, NULL, &err);
     if (err < 0)
     {
@@ -142,6 +148,12 @@ void CLManager::computeMemory(QOpenGLBuffer &posVBO)
         exit(-1);
     }
     err = m_initKernel.setArg(0, m_bufferVBO);
+    if (err < 0)
+    {
+        printf("Couldn't set init kernel arg.");
+        exit(-1);
+    }
+    err = m_initKernel.setArg(1, m_bufferShape);
     if (err < 0)
     {
         printf("Couldn't set init kernel arg.");
@@ -179,18 +191,18 @@ void CLManager::runUpdateKernel(float *gravityPoint)
 		exit(-1);
 	}
 
-    // GRAVITY POINT
+     // GRAVITY POINT
     float test[3];
 	test[0] = gravityPoint[0];
 	test[1] = gravityPoint[1];
-	test[2] = gravityPoint[2];
+    test[2] = gravityPoint[2];
 	// err = clEnqueueWriteBuffer(computeCommands, gravityPointMemObject, CL_TRUE,  0, sizeof(float) * 3, test, 0, NULL, NULL);
     err = m_cmdQueue.enqueueWriteBuffer(m_bufferGravity, CL_TRUE, 0, sizeof(float) * 3, test, nullptr, &event);
 	if (err < 0) {
 		printf("Couldn't write into the gravity point openCL buffer: %d", err);
 		exit(-1);
     }
-    
+
     size_t globalWorkSize = PARTICLES_COUNT;
     // size_t globalWorkSize = 1024;
     // err = clEnqueueNDRangeKernel(m_cmdQueue(), m_updateKernel(), 1, nullptr, &globalWorkSize, &m_maxWorkGroupSize, 0, nullptr, &event());
@@ -215,19 +227,22 @@ void CLManager::runInitKernel()
 {
     int err;
 	cl::Event event;
-
+    
 	glFinish();
     m_vbos.push_back(m_bufferVBO);
 	printf("Running initialization kernel...\n");
 	/* Execute the kernel */
     err = m_cmdQueue.enqueueAcquireGLObjects(&m_vbos, NULL, NULL);
-	// err = clEnqueueAcquireGLObjects(computeCommands, 1, &glMemObject, 0, 0, NULL);
 	if (err < 0)
 	{
 		printf("Couldn't acquire the GL objects: %d", err);
 		exit(-1);
 	}
-
+    err = m_cmdQueue.enqueueWriteBuffer(m_bufferShape, CL_TRUE, 0, sizeof(int), &m_shape, nullptr, &event);
+	if (err < 0) {
+		printf("Couldn't write into shape buffer: %d", err);
+		exit(-1);
+    }
 	size_t globalWorkSize = PARTICLES_COUNT;
 	// size_t globalWorkSize = 1024;
     err = m_cmdQueue.enqueueNDRangeKernel(m_initKernel, cl::NullRange, cl::NDRange(globalWorkSize), cl::NDRange(m_maxWorkGroupSize), nullptr, &event);
@@ -241,7 +256,7 @@ void CLManager::runInitKernel()
 	if (err < 0)
 	{
 		printf("Wait event error: %d", err);
-		exit(-1);
+    		exit(-1);
     }
     err = m_cmdQueue.enqueueReleaseGLObjects(&m_vbos);
     if (err < 0)
