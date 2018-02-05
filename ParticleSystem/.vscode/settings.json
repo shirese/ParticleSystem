@@ -21,6 +21,8 @@
         "locale": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp"
     }
 }

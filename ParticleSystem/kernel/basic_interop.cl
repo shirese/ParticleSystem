@@ -1,4 +1,4 @@
-#define SPHERE_RADIUS	20.0f
+#define SPHERE_RADIUS	25.0f
 #define SQUARE_SIZE		1.0f
 
 void kernel initialize_sphere(__global Particle *particles)

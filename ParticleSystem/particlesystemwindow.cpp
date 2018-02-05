@@ -57,9 +57,12 @@ void ParticleSysWindow::initialize(ParticleManager &particleManager, CLManager &
 void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clManager)
 {
     GLuint err;
-    const qreal retinaScale = devicePixelRatio();
 
-    // float grav[3] = { x, y, -2 };
+    if (m_frame == 0)
+        m_time.start();
+    else
+        m_fps = m_time.elapsed() / float(m_frame);
+    const qreal retinaScale = devicePixelRatio();
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -79,7 +82,10 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
         clManager.setShape(m_initShape);
         clManager.runInitKernel();
         m_shapeUpdated = !m_shapeUpdated;
+        m_shapeUpdating = true;
     }
+    else if (m_shapeUpdating)
+        clManager.runInitKernel();
     else if (m_update)
     {
         if (m_followMouse)
@@ -90,7 +96,6 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
         }
         m_gravityVec.project(model, projection, QRect(0, 0, width() * retinaScale, height() * retinaScale));
         float *grav = hit_plane(m_gravityVec, 2);
-        printf("[0] %f %f %f\n", grav[0], grav[1], grav[2]);
         clManager.runUpdateKernel(grav);
     }
     m_program->setUniformValue(m_matrixUniform, projection);
@@ -107,7 +112,6 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
     // err = glGetError();
     // if (err != GL_NO_ERROR)
     //     printf("Error: OpenGL Get Error: %d\n", err);
-
     ++m_frame;
 }
 
@@ -123,6 +127,7 @@ void ParticleSysWindow::keyPressEvent(QKeyEvent *event)
     {
         case Qt::Key_Space:
             m_update = !m_update;
+            m_shapeUpdating = false;
             break ;
         case Qt::Key_C:
             m_initShape = 1;

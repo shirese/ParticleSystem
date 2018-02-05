@@ -7,6 +7,8 @@
 
 #include <QOpenGLWidget>
 
+// TEST
+#include <QLabel>
 OpenGLWindow::OpenGLWindow(QWindow *parent)
     : QWindow(parent)
     , m_animating(false)

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 
     ParticleSysWindow window;
     window.setFormat(format);
-    window.resize(640, 480);
+    window.resize(1280, 1050);
     window.show();
     
     // CLManager clManager;

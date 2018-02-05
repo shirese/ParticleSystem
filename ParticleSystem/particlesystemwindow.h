@@ -6,6 +6,9 @@
 #include "shader.h"
 #include "utils.h"
 
+#include <QLabel>
+#include <QTime>
+
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QScreen>
@@ -37,13 +40,17 @@ class ParticleSysWindow : public OpenGLWindow
         void keyPressEvent(QKeyEvent *event);
 
     private:
+        QTime m_time;
         int m_frame;
+        int m_fps;
         int m_initShape = 1;
         bool m_shapeUpdated = false;
+        bool m_shapeUpdating = false;
         bool m_update = false;
         bool m_followMouse = true;
         bool m_gravitySet = false;
         bool m_rotate = false;
+        QLabel *m_fpsLabel;
         QOpenGLShaderProgram* m_program;
         QOpenGLBuffer m_colVBO, m_posVBO;
         QOpenGLVertexArrayObject m_vao;

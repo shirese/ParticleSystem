@@ -191,13 +191,8 @@ void CLManager::runUpdateKernel(float *gravityPoint)
 		exit(-1);
 	}
 
-     // GRAVITY POINT
-    float test[3];
-	test[0] = gravityPoint[0];
-	test[1] = gravityPoint[1];
-    test[2] = gravityPoint[2];
 	// err = clEnqueueWriteBuffer(computeCommands, gravityPointMemObject, CL_TRUE,  0, sizeof(float) * 3, test, 0, NULL, NULL);
-    err = m_cmdQueue.enqueueWriteBuffer(m_bufferGravity, CL_TRUE, 0, sizeof(float) * 3, test, nullptr, &event);
+    err = m_cmdQueue.enqueueWriteBuffer(m_bufferGravity, CL_TRUE, 0, sizeof(float) * 3, gravityPoint, nullptr, &event);
 	if (err < 0) {
 		printf("Couldn't write into the gravity point openCL buffer: %d", err);
 		exit(-1);
@@ -230,7 +225,6 @@ void CLManager::runInitKernel()
     
 	glFinish();
     m_vbos.push_back(m_bufferVBO);
-	printf("Running initialization kernel...\n");
 	/* Execute the kernel */
     err = m_cmdQueue.enqueueAcquireGLObjects(&m_vbos, NULL, NULL);
 	if (err < 0)

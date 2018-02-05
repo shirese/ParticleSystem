@@ -33,9 +33,9 @@ public:
         bool event(QEvent *event) override;
         void exposeEvent(QExposeEvent *event) override;
         QOpenGLContext *m_context;
+        QOpenGLPaintDevice *m_device;
 
     private:
         bool m_animating;
 
-        QOpenGLPaintDevice *m_device;
 };
