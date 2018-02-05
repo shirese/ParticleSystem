@@ -9,7 +9,8 @@
 #include <QLabel>
 #include <QTime>
 
-#include <QtGui/QGuiApplication>
+#include <QOpenGLWidget>
+#include <QApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QScreen>
 #include <QtGui/QOpenGLShaderProgram>
@@ -23,13 +24,14 @@
 
 #endif
 
-class ParticleSysWindow : public OpenGLWindow
+class ParticleSysWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
     public:
-        ParticleSysWindow();
+        ParticleSysWindow(QWidget *parent = 0);
 
-        void initialize(ParticleManager &particleManager, CLManager &clManager) override;
-        void render(ParticleManager &particleManager, CLManager &clManager) override;
+        void initializeGL();
+        void resizeGL(int w, int h);
+        void paintGL();
 
     protected:
         float x = 0, y = 0;
@@ -40,9 +42,10 @@ class ParticleSysWindow : public OpenGLWindow
         void keyPressEvent(QKeyEvent *event);
 
     private:
+        QMatrix4x4 m_projection;
         QTime m_time;
-        int m_frame;
-        int m_fps;
+        int m_frame = 0;
+        int m_fps = 0;
         int m_initShape = 1;
         bool m_shapeUpdated = false;
         bool m_shapeUpdating = false;

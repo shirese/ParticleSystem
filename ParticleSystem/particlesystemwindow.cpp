@@ -1,14 +1,33 @@
 #include "particlesystemwindow.h"
 
-ParticleSysWindow::ParticleSysWindow()
-    :   m_frame(0)
+ParticleSysWindow::ParticleSysWindow(QWidget *parent) : QOpenGLWidget(parent)
 {
+    QSurfaceFormat format;
+
+    format.setVersion(4, 3);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setSamples(16);
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    QSurfaceFormat::setDefaultFormat(format);
+    setFormat(format);
+    setMouseTracking(true);
+    m_time.start();
 }
 
-void ParticleSysWindow::initialize(ParticleManager &particleManager, CLManager &clManager)
+void ParticleSysWindow::initializeGL()
 {
     std::string vertexShaderSource, fragmentShaderSource;
+    CLManager &clManager = CLManager::getInstance();
 
+    m_fpsLabel = new QLabel(this);
+    m_fpsLabel->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+    m_fpsLabel->setText("00");
+    m_fpsLabel->setStyleSheet("QLabel { color : green; }");
+    m_fpsLabel->setIndent(width() - 20);
+
+    initializeOpenGLFunctions();
+    clManager.initCL(context());
     vertexShaderSource = fileToString(VERTEX_SHADER_SRC);
     if (vertexShaderSource.empty())
         exit(-1);
@@ -54,14 +73,19 @@ void ParticleSysWindow::initialize(ParticleManager &particleManager, CLManager &
     m_program->release();
 }
 
-void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clManager)
+void ParticleSysWindow::resizeGL(int w, int h)
+{
+    m_projection.setToIdentity();
+    const qreal retinaScale = devicePixelRatio();    
+    m_projection.perspective(60.0f, w / float(h), 0.01f, 1000.0f);
+    m_projection.translate(0, 0, -2);
+}
+
+void ParticleSysWindow::paintGL()
 {
     GLuint err;
+    CLManager &clManager = CLManager::getInstance();
 
-    if (m_frame == 0)
-        m_time.start();
-    else
-        m_fps = m_time.elapsed() / float(m_frame);
     const qreal retinaScale = devicePixelRatio();
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
@@ -72,11 +96,9 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
     // printf("{ %f %f %f }\n", gravityVec[0], gravityVec[1], gravityVec[2]);
     QMatrix4x4 model;
     model.setToIdentity();
-    QMatrix4x4 projection;
-    projection.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f);
-    projection.translate(0, 0, -2);
     if (m_rotate)
-        projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+        m_projection.rotate(100.0f * m_frame / 60.0, 0, 1, 0);
+        // m_projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
     if (m_shapeUpdated)
     {
         clManager.setShape(m_initShape);
@@ -94,11 +116,10 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
             m_gravityVec.setY(1.0 - (2.0 * y) / height() * retinaScale);
             m_gravityVec.setZ(0);
         }
-        m_gravityVec.project(model, projection, QRect(0, 0, width() * retinaScale, height() * retinaScale));
         float *grav = hit_plane(m_gravityVec, 2);
         clManager.runUpdateKernel(grav);
     }
-    m_program->setUniformValue(m_matrixUniform, projection);
+    m_program->setUniformValue(m_matrixUniform, m_projection);
 
     m_vao.bind();
     // glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -113,6 +134,12 @@ void ParticleSysWindow::render(ParticleManager &particleManager, CLManager &clMa
     // if (err != GL_NO_ERROR)
     //     printf("Error: OpenGL Get Error: %d\n", err);
     ++m_frame;
+    if (m_time.elapsed() >= 1000)
+    {
+        m_fps = m_frame / (float(m_time.elapsed()) / 1000.0f);
+        m_fpsLabel->setText(QString::number(m_fps));
+    }
+    update();
 }
 
 void ParticleSysWindow::mouseMoveEvent(QMouseEvent *event)
