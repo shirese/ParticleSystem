@@ -4,15 +4,23 @@ ParticleSysWindow::ParticleSysWindow(QWidget *parent) : QOpenGLWidget(parent)
 {
     QSurfaceFormat format;
 
-    format.setVersion(4, 3);
+    format.setVersion(4, 1);
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setSamples(16);
     format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
+    format.setSwapInterval(0);
+    format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
     QSurfaceFormat::setDefaultFormat(format);
     setFormat(format);
     setMouseTracking(true);
     m_time.start();
+}
+
+ParticleSysWindow::~ParticleSysWindow()
+{
+    m_posVBO.destroy();
+    m_colVBO.destroy();
+    m_program->release();
 }
 
 void ParticleSysWindow::initializeGL()
@@ -70,13 +78,13 @@ void ParticleSysWindow::initializeGL()
     clManager.setShape(m_initShape);
     clManager.runInitKernel();
     // particleManager.generateBuffers(m_posAttr, m_colAttr);
-    m_program->release();
 }
 
 void ParticleSysWindow::resizeGL(int w, int h)
 {
     m_projection.setToIdentity();
     const qreal retinaScale = devicePixelRatio();    
+    glViewport(0, 0, width() * retinaScale, height() * retinaScale);
     m_projection.perspective(60.0f, w / float(h), 0.01f, 1000.0f);
     m_projection.translate(0, 0, -2);
 }
@@ -86,16 +94,11 @@ void ParticleSysWindow::paintGL()
     GLuint err;
     CLManager &clManager = CLManager::getInstance();
 
-    const qreal retinaScale = devicePixelRatio();
-    glViewport(0, 0, width() * retinaScale, height() * retinaScale);
-
     glClear(GL_COLOR_BUFFER_BIT);
 
-    m_program->bind();
+    // m_program->bind();
 
     // printf("{ %f %f %f }\n", gravityVec[0], gravityVec[1], gravityVec[2]);
-    QMatrix4x4 model;
-    model.setToIdentity();
     if (m_rotate)
         m_projection.rotate(100.0f * m_frame / 60.0, 0, 1, 0);
         // m_projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
@@ -103,17 +106,22 @@ void ParticleSysWindow::paintGL()
     {
         clManager.setShape(m_initShape);
         clManager.runInitKernel();
-        m_shapeUpdated = !m_shapeUpdated;
+        m_shapeUpdated = false;
         m_shapeUpdating = true;
     }
-    else if (m_shapeUpdating)
+    else if (clManager.shape == 0)
+    {
+        m_shapeUpdating = false;
+        m_initShape = 0;
+    }
+    if (m_shapeUpdating)
         clManager.runInitKernel();
     else if (m_update)
     {
         if (m_followMouse)
         {
-            m_gravityVec.setX(2.0 * x / width() * retinaScale - 1.0);
-            m_gravityVec.setY(1.0 - (2.0 * y) / height() * retinaScale);
+            m_gravityVec.setX(2.0 * x / width() - 1.0);
+            m_gravityVec.setY(1.0 - (2.0 * y) / height());
             m_gravityVec.setZ(0);
         }
         float *grav = hit_plane(m_gravityVec, 2);
@@ -128,7 +136,7 @@ void ParticleSysWindow::paintGL()
     // glBindVertexArray(particleManager.m_vao);
     // glBindVertexArray(0);
 
-    m_program->release();
+    // m_program->release();
 
     // err = glGetError();
     // if (err != GL_NO_ERROR)
@@ -136,7 +144,7 @@ void ParticleSysWindow::paintGL()
     ++m_frame;
     if (m_time.elapsed() >= 1000)
     {
-        m_fps = m_frame / (float(m_time.elapsed()) / 1000.0f);
+        m_fps = m_frame / (double(m_time.elapsed()) / 1000.0);
         m_fpsLabel->setText(QString::number(m_fps));
     }
     update();
@@ -158,11 +166,11 @@ void ParticleSysWindow::keyPressEvent(QKeyEvent *event)
             break ;
         case Qt::Key_C:
             m_initShape = 1;
-            m_shapeUpdated = !m_shapeUpdated;
+            m_shapeUpdated = true;
             break ;
         case Qt::Key_V:
             m_initShape = 2;
-            m_shapeUpdated = !m_shapeUpdated;
+            m_shapeUpdated = true;
             break ;
         case Qt::Key_F:
             m_followMouse = !m_followMouse;

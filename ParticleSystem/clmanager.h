@@ -36,8 +36,9 @@ class CLManager
         void computeMemory(QOpenGLBuffer &posVBO);
         void runUpdateKernel(float *gravityPoint);
         void runInitKernel();
-        void setShape (short s) { m_shape = s; };
-
+        void setShape (short s) { shape = s; };
+        short shape = 0;
+        
     private:
         CLManager(){};
         CLManager(CLManager const &);
@@ -50,7 +51,6 @@ class CLManager
         cl::Buffer              m_bufferGravity;
         cl::BufferGL            m_bufferVBO;
         std::vector<cl::Memory> m_vbos;
-        int                     m_shape = 0;
         size_t                  m_maxWorkGroupSize;
 };
 

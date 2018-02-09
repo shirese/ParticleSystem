@@ -1,7 +1,7 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-#define PARTICLES_COUNT 1024000
+#define PARTICLES_COUNT 3072000
 
 #include "cl.hpp"
 

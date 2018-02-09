@@ -232,14 +232,14 @@ void CLManager::runInitKernel()
 		printf("Couldn't acquire the GL objects: %d", err);
 		exit(-1);
 	}
-    err = m_cmdQueue.enqueueWriteBuffer(m_bufferShape, CL_TRUE, 0, sizeof(int), &m_shape, nullptr, &event);
+    err = m_cmdQueue.enqueueWriteBuffer(m_bufferShape, CL_TRUE, 0, sizeof(int), &shape, nullptr, &event);
 	if (err < 0) {
 		printf("Couldn't write into shape buffer: %d", err);
 		exit(-1);
     }
 	size_t globalWorkSize = PARTICLES_COUNT;
 	// size_t globalWorkSize = 1024;
-    err = m_cmdQueue.enqueueNDRangeKernel(m_initKernel, cl::NullRange, cl::NDRange(globalWorkSize), cl::NDRange(m_maxWorkGroupSize), nullptr, &event);
+    err = m_cmdQueue.enqueueNDRangeKernel(m_initKernel, cl::NullRange, cl::NDRange(globalWorkSize), cl::NullRange, nullptr, &event);
 	// err = clEnqueueNDRangeKernel(m_cmdQueue(), m_initKernel(), 1, nullptr, &globalWorkSize, &m_maxWorkGroupSize, 0, nullptr, &event());
 	if (err < 0)
 	{
@@ -256,6 +256,11 @@ void CLManager::runInitKernel()
     if (err < 0)
 	{
 		printf("Release error: %d", err);
+		exit(-1);
+    }
+    err = m_cmdQueue.enqueueReadBuffer(m_bufferShape, CL_TRUE, 0, sizeof(short), &shape, nullptr, &event);
+	if (err < 0) {
+		printf("Couldn't read into shape buffer: %d", err);
 		exit(-1);
     }
 }

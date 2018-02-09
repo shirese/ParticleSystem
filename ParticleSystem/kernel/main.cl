@@ -1,8 +1,9 @@
-void kernel initialize(__global Particle *particles, __global int *shape)
+void kernel initialize(__global Particle *particles, __global short *shape)
 {
 	int i = get_global_id(0);
 	float3 dir;
 
+	particles += i;
 	if (*shape == 1)
 	{
 		float ga = M_PI * (3.0 - sqrt(5.));
@@ -12,9 +13,11 @@ void kernel initialize(__global Particle *particles, __global int *shape)
 		dir.x = radius * cos(theta);
 		dir.y = radius * sin(theta);
 		dir.z = z;
-		dir = particles[i].position - dir;
-		particles[i].velocity = (float3)0.4 * dir;
-		particles[i].position = particles[i].velocity;
+		dir = particles->position - dir;
+		particles->velocity = (float3)0.4 * dir;
+		if (distance(particles->velocity, particles->position) == 0)
+			*shape = 0;
+		particles->position = particles->velocity;
 	}
 	else if (*shape == 2)
 	{
@@ -27,13 +30,15 @@ void kernel initialize(__global Particle *particles, __global int *shape)
 		dir.x = x * subDivSize - 0.5 + subDivSize2;
 		dir.y = y * subDivSize - 0.5 + subDivSize2;
 		dir.z = z * subDivSize - 0.5 + subDivSize2;
-		dir = particles[i].position - dir;
-		particles[i].velocity = (float3)0.4 * dir;
-		particles[i].position = particles[i].velocity;
+		dir = particles->position - dir;
+		particles->velocity = (float3)0.4 * dir;
+		if (distance(particles->velocity, particles->position) == 0)
+			*shape = 0;
+		particles->position = particles->velocity;
 	}
-	particles[i].color.x = 1.;
-	particles[i].color.y = 0.15;
-	particles[i].color.z = 0.15;
+	particles->color.x = 1.;
+	particles->color.y = 0.15;
+	particles->color.z = 0.15;
 	//float phi = ( sqrt(5.f) + 1.f ) / 2.f - 1.f; // golden ratio
 	//float ga = phi * 2.f * M_PI;
 

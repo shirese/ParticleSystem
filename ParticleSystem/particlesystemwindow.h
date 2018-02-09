@@ -28,7 +28,7 @@ class ParticleSysWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
     public:
         ParticleSysWindow(QWidget *parent = 0);
-
+        ~ParticleSysWindow();
         void initializeGL();
         void resizeGL(int w, int h);
         void paintGL();
@@ -45,7 +45,7 @@ class ParticleSysWindow : public QOpenGLWidget, protected QOpenGLFunctions
         QMatrix4x4 m_projection;
         QTime m_time;
         int m_frame = 0;
-        int m_fps = 0;
+        double m_fps = 0;
         int m_initShape = 1;
         bool m_shapeUpdated = false;
         bool m_shapeUpdating = false;
