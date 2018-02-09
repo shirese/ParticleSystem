@@ -225,6 +225,7 @@ DIST          = /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/featur
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/qt_config.prf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/macx-clang/qmake.conf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/spec_post.prf \
+		../ParticleSystem/.qmake.stash \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/exclusive_builds.prf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/mac/sdk.prf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/toolchain.prf \
@@ -444,6 +445,7 @@ Makefile: ../ParticleSystem/ParticleSystem.pro /sgoinfre/goinfre/Perso/chaueur/q
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/qt_config.prf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/macx-clang/qmake.conf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/exclusive_builds.prf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/mac/sdk.prf \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/toolchain.prf \
@@ -636,6 +638,7 @@ Makefile: ../ParticleSystem/ParticleSystem.pro /sgoinfre/goinfre/Perso/chaueur/q
 /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/qt_config.prf:
 /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/macx-clang/qmake.conf:
 /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/exclusive_builds.prf:
 /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/mac/sdk.prf:
 /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/toolchain.prf:
@@ -710,7 +713,7 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) -r name_of_the_app.app
-	-$(DEL_FILE) /Users/chaueur/ParticleSystem/build-ParticleSystem-Desktop_Qt_5_9_3_clang_64bit-Profile/name_of_the_app.app.dSYM/Contents/Resources/DWARF/name_of_the_app /Users/chaueur/ParticleSystem/build-ParticleSystem-Desktop_Qt_5_9_3_clang_64bit-Profile/name_of_the_app.app.dSYM/Contents/Info.plist
+	-$(DEL_FILE) /Users/chaueur/ParticleSystem/build-ParticleSystem-Desktop_Qt_5_9_3_clang_64bit-Profile/name_of_the_app.app.dSYM/Contents/Resources/DWARF/name_of_the_app .qmake.stash /Users/chaueur/ParticleSystem/build-ParticleSystem-Desktop_Qt_5_9_3_clang_64bit-Profile/name_of_the_app.app.dSYM/Contents/Info.plist
 	-$(DEL_FILE) Makefile
 
 
@@ -791,7 +794,15 @@ main.o: ../ParticleSystem/main.cpp ../ParticleSystem/clmanager.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h
+		../ParticleSystem/utils.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QLabel \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTime \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QApplication \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ParticleSystem/main.cpp
 
 openglwindow.o: ../ParticleSystem/openglwindow.cpp ../ParticleSystem/openglwindow.h \
@@ -812,7 +823,9 @@ openglwindow.o: ../ParticleSystem/openglwindow.cpp ../ParticleSystem/openglwindo
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
-		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QLabel \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o openglwindow.o ../ParticleSystem/openglwindow.cpp
 
 clmanager.o: ../ParticleSystem/clmanager.cpp ../ParticleSystem/clmanager.h \
@@ -846,7 +859,15 @@ particlemanager.o: ../ParticleSystem/particlemanager.cpp ../ParticleSystem/parti
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h
+		../ParticleSystem/utils.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QLabel \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTime \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QApplication \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o particlemanager.o ../ParticleSystem/particlemanager.cpp
 
 utils.o: ../ParticleSystem/utils.cpp ../ParticleSystem/utils.h \
@@ -880,7 +901,15 @@ particlesystemwindow.o: ../ParticleSystem/particlesystemwindow.cpp ../ParticleSy
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		../ParticleSystem/shader.h \
-		../ParticleSystem/utils.h
+		../ParticleSystem/utils.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QLabel \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTime \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QApplication \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o particlesystemwindow.o ../ParticleSystem/particlesystemwindow.cpp
 
 moc_openglwindow.o: moc_openglwindow.cpp 

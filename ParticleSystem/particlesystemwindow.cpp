@@ -6,14 +6,26 @@ ParticleSysWindow::ParticleSysWindow(QWidget *parent) : QOpenGLWidget(parent)
 
     format.setVersion(4, 1);
     format.setProfile(QSurfaceFormat::CoreProfile);
-    format.setSamples(16);
-    format.setDepthBufferSize(24);
     format.setSwapInterval(0);
-    format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     QSurfaceFormat::setDefaultFormat(format);
     setFormat(format);
     setMouseTracking(true);
-    m_time.start();
+    m_fpsLabel = new QLabel(this);
+    m_fpsLabel->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+    m_fpsLabel->setText("00");
+    m_fpsLabel->setStyleSheet("QLabel { color : green; }");
+    m_fpsLabel->setIndent(width() - 20);
+    
+    // QTimer* fpsTimer = new QTimer();
+
+    // QObject::connect(fpsTimer, SIGNAL(timeout()), this, SLOT(showFps()));
+
+    // fpsTimer->start(1000);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer->start(0);
 }
 
 ParticleSysWindow::~ParticleSysWindow()
@@ -23,16 +35,16 @@ ParticleSysWindow::~ParticleSysWindow()
     m_program->release();
 }
 
+void ParticleSysWindow::showFPS()
+{
+    m_fpsLabel->setText(QString::number(m_fps));
+    m_fps = 0;
+}
+
 void ParticleSysWindow::initializeGL()
 {
     std::string vertexShaderSource, fragmentShaderSource;
     CLManager &clManager = CLManager::getInstance();
-
-    m_fpsLabel = new QLabel(this);
-    m_fpsLabel->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-    m_fpsLabel->setText("00");
-    m_fpsLabel->setStyleSheet("QLabel { color : green; }");
-    m_fpsLabel->setIndent(width() - 20);
 
     initializeOpenGLFunctions();
     clManager.initCL(context());
@@ -91,10 +103,10 @@ void ParticleSysWindow::resizeGL(int w, int h)
 
 void ParticleSysWindow::paintGL()
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     GLuint err;
     CLManager &clManager = CLManager::getInstance();
-
-    glClear(GL_COLOR_BUFFER_BIT);
 
     // m_program->bind();
 
@@ -111,8 +123,11 @@ void ParticleSysWindow::paintGL()
     }
     else if (clManager.shape == 0)
     {
+        m_shapeUpdated = false;
         m_shapeUpdating = false;
         m_initShape = 0;
+        m_update = false;
+        m_followMouse = false;
     }
     if (m_shapeUpdating)
         clManager.runInitKernel();
@@ -122,7 +137,7 @@ void ParticleSysWindow::paintGL()
         {
             m_gravityVec.setX(2.0 * x / width() - 1.0);
             m_gravityVec.setY(1.0 - (2.0 * y) / height());
-            m_gravityVec.setZ(0);
+            // m_gravityVec.setZ(0);
         }
         float *grav = hit_plane(m_gravityVec, 2);
         clManager.runUpdateKernel(grav);
@@ -130,7 +145,6 @@ void ParticleSysWindow::paintGL()
     m_program->setUniformValue(m_matrixUniform, m_projection);
 
     m_vao.bind();
-    // glDrawArrays(GL_TRIANGLES, 0, 3);
     glDrawArrays(GL_POINTS, 0, PARTICLES_COUNT);
     m_vao.release();
     // glBindVertexArray(particleManager.m_vao);
@@ -141,13 +155,7 @@ void ParticleSysWindow::paintGL()
     // err = glGetError();
     // if (err != GL_NO_ERROR)
     //     printf("Error: OpenGL Get Error: %d\n", err);
-    ++m_frame;
-    if (m_time.elapsed() >= 1000)
-    {
-        m_fps = m_frame / (double(m_time.elapsed()) / 1000.0);
-        m_fpsLabel->setText(QString::number(m_fps));
-    }
-    update();
+    glEnd();
 }
 
 void ParticleSysWindow::mouseMoveEvent(QMouseEvent *event)
@@ -167,10 +175,12 @@ void ParticleSysWindow::keyPressEvent(QKeyEvent *event)
         case Qt::Key_C:
             m_initShape = 1;
             m_shapeUpdated = true;
+            m_update = true;
             break ;
         case Qt::Key_V:
             m_initShape = 2;
             m_shapeUpdated = true;
+            m_update = true;
             break ;
         case Qt::Key_F:
             m_followMouse = !m_followMouse;

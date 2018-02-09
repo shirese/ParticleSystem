@@ -9,13 +9,13 @@
 #include <QLabel>
 #include <QTime>
 
+#include <QTimer>
 #include <QOpenGLWidget>
 #include <QApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QScreen>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
-
 #include <QtCore/qmath.h>
 
 #ifndef BUFFER_OFFSET
@@ -29,9 +29,11 @@ class ParticleSysWindow : public QOpenGLWidget, protected QOpenGLFunctions
     public:
         ParticleSysWindow(QWidget *parent = 0);
         ~ParticleSysWindow();
-        void initializeGL();
-        void resizeGL(int w, int h);
-        void paintGL();
+        virtual void initializeGL();
+        virtual void resizeGL(int w, int h);
+        virtual void paintGL();
+        void showFPS();
+        void processing();
 
     protected:
         float x = 0, y = 0;
@@ -43,9 +45,10 @@ class ParticleSysWindow : public QOpenGLWidget, protected QOpenGLFunctions
 
     private:
         QMatrix4x4 m_projection;
+        QTimer *m_timer;
         QTime m_time;
         int m_frame = 0;
-        double m_fps = 0;
+        float m_fps = 0;
         int m_initShape = 1;
         bool m_shapeUpdated = false;
         bool m_shapeUpdating = false;

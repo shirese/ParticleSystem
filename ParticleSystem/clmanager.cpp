@@ -135,7 +135,7 @@ void CLManager::computeMemory(QOpenGLBuffer &posVBO)
         printf("Couldn't create a buffer object from the VBO.");
         exit(-1);
     }
-    m_bufferShape = cl::Buffer(m_context, CL_MEM_READ_ONLY, sizeof(int), NULL, &err);
+    m_bufferShape = cl::Buffer(m_context, CL_MEM_READ_WRITE, sizeof(short), NULL, &err);
     if (err < 0)
     {
         printf("Couldn't create shape buffer.");
@@ -201,7 +201,7 @@ void CLManager::runUpdateKernel(float *gravityPoint)
     size_t globalWorkSize = PARTICLES_COUNT;
     // size_t globalWorkSize = 1024;
     // err = clEnqueueNDRangeKernel(m_cmdQueue(), m_updateKernel(), 1, nullptr, &globalWorkSize, &m_maxWorkGroupSize, 0, nullptr, &event());
-    err = m_cmdQueue.enqueueNDRangeKernel(m_updateKernel, cl::NullRange, cl::NDRange(globalWorkSize), cl::NDRange(m_maxWorkGroupSize), nullptr, &event);
+    err = m_cmdQueue.enqueueNDRangeKernel(m_updateKernel, cl::NullRange, cl::NDRange(globalWorkSize), cl::NullRange, nullptr, &event);
 	if (err < 0)
 	{
 		printf("Couldn't enqueue the kernel: %d", err);
@@ -213,7 +213,7 @@ void CLManager::runUpdateKernel(float *gravityPoint)
 		printf("Wait event error %d", err);
 		exit(-1);
 	}
-    err = m_cmdQueue.enqueueReleaseGLObjects(&m_vbos);
+    // err = m_cmdQueue.enqueueReleaseGLObjects(&m_vbos);
 	// clEnqueueReleaseGLObjects(computeCommands, 1, &m_bufferVBO, 0, NULL, NULL);
     // clReleaseEvent(waitEvent);
 }
@@ -232,7 +232,7 @@ void CLManager::runInitKernel()
 		printf("Couldn't acquire the GL objects: %d", err);
 		exit(-1);
 	}
-    err = m_cmdQueue.enqueueWriteBuffer(m_bufferShape, CL_TRUE, 0, sizeof(int), &shape, nullptr, &event);
+    err = m_cmdQueue.enqueueWriteBuffer(m_bufferShape, CL_TRUE, 0, sizeof(short), &shape, nullptr, &event);
 	if (err < 0) {
 		printf("Couldn't write into shape buffer: %d", err);
 		exit(-1);
@@ -252,12 +252,12 @@ void CLManager::runInitKernel()
 		printf("Wait event error: %d", err);
     		exit(-1);
     }
-    err = m_cmdQueue.enqueueReleaseGLObjects(&m_vbos);
-    if (err < 0)
-	{
-		printf("Release error: %d", err);
-		exit(-1);
-    }
+    // err = m_cmdQueue.enqueueReleaseGLObjects(&m_vbos);
+    // if (err < 0)
+	// {
+	// 	printf("Release error: %d", err);
+	// 	exit(-1);
+    // }
     err = m_cmdQueue.enqueueReadBuffer(m_bufferShape, CL_TRUE, 0, sizeof(short), &shape, nullptr, &event);
 	if (err < 0) {
 		printf("Couldn't read into shape buffer: %d", err);

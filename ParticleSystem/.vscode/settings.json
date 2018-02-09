@@ -23,6 +23,7 @@
         "utility": "cpp",
         "bitset": "cpp",
         "__bit_reference": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "functional": "cpp"
     }
 }
