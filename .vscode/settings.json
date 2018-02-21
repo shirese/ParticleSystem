@@ -2,6 +2,15 @@
     "files.associations": {
         "__mutex_base": "cpp",
         "memory": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "fstream": "cpp",
+        "__split_buffer": "cpp",
+        "iterator": "cpp",
+        "set": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp"
     }
 }
