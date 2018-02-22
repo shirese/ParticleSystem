@@ -19,15 +19,15 @@
 
 class Window
 {
+  Friend class ParticleManager;
+
   public:
     Window();
     ~Window();
     void loadShaders();
-
     GLFWwindow *window;
 
-  
-  private:
+  protected:
     GLuint m_shaderProgram;
 };
 

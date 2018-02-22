@@ -1,15 +1,10 @@
 #include "clmanager.h"
 #include "utils.h"
 
-void CLManager::initCL(QOpenGLContext *glContext)
+void CLManager::initCL()
 {
     int err;
 
-    if (!glContext) {
-        qWarning("Attempted CL-GL interop without a current OpenGL context");
-        exit(-1);
-    }
-    
     std::vector<cl::Platform> all_platforms;
     cl::Platform::get(&all_platforms);
 

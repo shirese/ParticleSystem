@@ -1,31 +1,25 @@
 #ifndef PARTICLEMANAGER
 #define PARTICLEMANAGER
 
-#include <QtGui/QOpenGLFunctions>
-#include <QVector3D>
-#include <QOpenGLBuffer>
-#include <QOpenGLVertexArrayObject>
-
 class ParticleManager
 {
-    friend class OpenGLWindow;
-    friend class ParticleSysWindow;
     friend class CLManager;
+    friend class Window;
 
     public:
         ParticleManager() {};
         virtual ~ParticleManager();
-        float *getGravityCenter();
-        void generateBuffers(GLuint posAttr, GLuint colAttr);
-        void setGravityCenter(QVector3D pos);
-        void setParticleColor(float x, float y);
-        void renderParticles();
 
-    protected:
-        unsigned int m_nbParticles;
-        float m_gravityCenter[3] = {0., 0., -1.};
-        QOpenGLBuffer m_colVBO, m_posVBO;
-        QOpenGLVertexArrayObject m_vao;
+    private:
+        int m_initShape = 1;
+        bool m_shapeUpdated = false;
+        bool m_shapeUpdating = false;
+        bool m_update = false;
+        bool m_followMouse = true;
+        bool m_gravitySet = false;
+        bool m_rotate = false;
+        GLuint m_colVBO, m_posVBO, m_vao;
+        // GLM PROJ + GRAV VEC3 HERE
 };
 
 #endif
