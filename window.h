@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:36:16 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/22 19:23:35 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/02/23 15:08:31 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 class Window
 {
@@ -41,9 +43,12 @@ public:
   static void cursorCallback(GLFWwindow *window, double xpos, double ypos);
   GLFWwindow *window;
   GLuint shaderProgram;
-  bool initShape;
+  short initShape;
 
 private:
+  int m_frameCount;
+  double m_currTime;
+  double m_lastTime;
   double m_mousePosX, m_mousePosY;
   bool m_shapeUpdated;
   bool m_shapeUpdating;

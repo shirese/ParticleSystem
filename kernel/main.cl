@@ -36,9 +36,9 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 			*shape = 0;
 		particles->position = particles->velocity;
 	}
-	particles->color.x = 1.;
-	particles->color.y = 0.15;
-	particles->color.z = 0.15;
+	particles->color.x = 0.;
+	particles->color.y = 0.;
+	particles->color.z = 0.;
 	//float phi = ( sqrt(5.f) + 1.f ) / 2.f - 1.f; // golden ratio
 	//float ga = phi * 2.f * M_PI;
 

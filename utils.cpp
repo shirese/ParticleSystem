@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:40:44 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/22 19:26:34 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/02/23 12:25:45 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ GLuint createShader(std::string str, int type)
 float *hitPlane(glm::vec3 origin, float d)
 {
     glm::vec3 direction(origin.x, origin.y, -1);
-    glm::vec3 planeOrigin(0, 0, -1);
+    glm::vec3 planeOrigin(0, 0, -2);
     glm::vec3 planeNormal(0, 0, 1);
     glm::vec3 ret;
     float t;

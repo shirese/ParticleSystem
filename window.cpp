@@ -6,16 +6,19 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/22 19:25:44 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/02/23 15:12:54 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "window.h"
 
 Window::Window() : initShape(1),
+                   m_frameCount(0),
+                   m_currTime(0),
+                   m_lastTime(glfwGetTime()),
                    m_shapeUpdated(false),
                    m_shapeUpdating(false),
-                   m_update(true),
+                   m_update(false),
                    m_followMouse(true),
                    m_rotate(false)
 {
@@ -28,7 +31,7 @@ Window::Window() : initShape(1),
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    window = glfwCreateWindow(1200, 1080, "Simple example", NULL, NULL);
     if (!window)
     {
         fprintf(stderr, "Error glfwCreateWindow\n");
@@ -81,7 +84,7 @@ void Window::loadShaders()
 
 void Window::setCamera()
 {
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
+    glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 1200 / float(1080), 0.01f, 1000.0f);
     glm::mat4 View = glm::lookAt(
     glm::vec3(4,3,3), // Camera is at (4,3,3), in World Space
     glm::vec3(0,0,0), // and looks at the origin
@@ -92,12 +95,23 @@ void Window::setCamera()
     glm::mat4 Model = glm::mat4(1.0f);
 
     m_project = Projection * View * Model;
+    m_project = glm::translate(m_project, glm::vec3(0, 0, -2.0f));
 }
 
 void Window::render(CLManager &clManager, ParticleManager &particleManager)
 {
     while (!glfwWindowShouldClose(window))
     {
+        m_currTime = glfwGetTime();
+        m_frameCount++;
+        // If a second has passed.
+        if ( m_currTime - m_lastTime >= 1.0 )
+        {
+            printf("FPS %d\n", m_frameCount);
+            // Display the frame count here any way you want.
+            m_frameCount = 0;
+            m_lastTime += 1.0;
+        }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GLuint err;
@@ -123,8 +137,8 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
             if (m_followMouse)
             {
                 // TMP
-                particleManager.gravityVec.x = (2.0 * m_mousePosX / 640 - 1.0);
-                particleManager.gravityVec.y = (1.0 - (2.0 * m_mousePosY) / 480);
+                particleManager.gravityVec.x = (2.0 * m_mousePosX / 1200 - 1.0);
+                particleManager.gravityVec.y = (1.0 - (2.0 * m_mousePosY) / 1080);
                 particleManager.gravityVec.z = 0;
                 // m_gravityVec.setZ(0);
             }
@@ -152,29 +166,32 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
 {
     void *data = glfwGetWindowUserPointer(window);
     Window *w = static_cast<Window *>(data);
-    switch (key)
+    if (action == GLFW_PRESS)
     {
-    case GLFW_KEY_SPACE:
-        w->m_update = !w->m_update;
-        w->m_shapeUpdating = false;
-        break;
-    case GLFW_KEY_C:
-        w->initShape = 1;
-        w->m_shapeUpdated = true;
-        w->m_update = true;
-        break;
-    case GLFW_KEY_V:
-        w->initShape = 2;
-        w->m_shapeUpdated = true;
-        w->m_update = true;
-        break;
-    case GLFW_KEY_F:
-        w->m_followMouse = !w->m_followMouse;
-        break;
-    case GLFW_KEY_R:
-        w->m_rotate = !w->m_rotate;
-        break;
-    default:;
+        switch (key)
+        {
+            case GLFW_KEY_SPACE:
+                w->m_shapeUpdating = false;
+                w->m_update = !w->m_update;
+                break;
+            case GLFW_KEY_C:
+                w->initShape = 1;
+                w->m_shapeUpdated = true;
+                w->m_update = true;
+                break;
+            case GLFW_KEY_V:
+                w->initShape = 2;
+                w->m_shapeUpdated = true;
+                w->m_update = true;
+                break;
+            case GLFW_KEY_F:
+                w->m_followMouse = !w->m_followMouse;
+                break;
+            case GLFW_KEY_R:
+                w->m_rotate = !w->m_rotate;
+                break;
+            default:;
+        }
     }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);

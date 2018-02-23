@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/22 11:21:37 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/22 19:02:12 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/02/23 11:48:28 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,7 +235,6 @@ void CLManager::runInitKernel()
     int err;
 	cl::Event event;
     
-    printf("SET %hd\n", shape);
 	glFinish();
     m_vbos.push_back(m_bufferVBO);
 	/* Execute the kernel */

@@ -24,6 +24,7 @@ void kernel update_position(__global Particle *particles, __constant float3 *gra
 	particles->position += particles->velocity;
 	dist *= 0.42f;
 	particles->color.x = 1 - dist;
+	particles->color.y = 1 - dist;
 	particles->color.z = dist;
 	// getParticleColor(dist, particles->position);
 	particles->velocity *= 0.8f;
