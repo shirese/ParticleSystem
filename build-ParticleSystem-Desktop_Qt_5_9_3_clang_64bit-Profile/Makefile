@@ -13,8 +13,8 @@ MAKEFILE      = Makefile
 CC            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
 CXX           = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 DEFINES       = -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS        = -pipe -O2 -g $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -stdlib=libc++ -O2 -g -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -fPIC $(DEFINES)
+CFLAGS        = -pipe -g -O3 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -stdlib=libc++ -g -O3 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -fPIC $(DEFINES)
 INCPATH       = -I../ParticleSystem -I. -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtGui.framework/Headers -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/AGL.framework/Headers -I/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/macx-clang -F/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib
 QMAKE         = /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/bin/qmake
 DEL_FILE      = rm -f
@@ -733,7 +733,7 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/data/dummy.cpp
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -pipe -stdlib=libc++ -O2 -g -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -dM -E -o moc_predefs.h /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/data/dummy.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -pipe -stdlib=libc++ -g -O3 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -mmacosx-version-min=10.10 -Wall -W -dM -E -o moc_predefs.h /sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: moc_openglwindow.cpp
 compiler_moc_header_clean:
@@ -799,6 +799,8 @@ main.o: ../ParticleSystem/main.cpp ../ParticleSystem/clmanager.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTime \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTimer \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qtimer.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QApplication \
@@ -864,6 +866,8 @@ particlemanager.o: ../ParticleSystem/particlemanager.cpp ../ParticleSystem/parti
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTime \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTimer \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qtimer.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QApplication \
@@ -906,6 +910,8 @@ particlesystemwindow.o: ../ParticleSystem/particlesystemwindow.cpp ../ParticleSy
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTime \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/QTimer \
+		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtCore.framework/Headers/qtimer.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
 		/sgoinfre/goinfre/Perso/chaueur/qt/5.9.3/clang_64/lib/QtWidgets.framework/Headers/QApplication \

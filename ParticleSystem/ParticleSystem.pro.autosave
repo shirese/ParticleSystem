@@ -7,7 +7,7 @@ CONFIG(release, debug|release) {
 }
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-SOURCES +=  main.cpp \
+SOURCES +=  main.cpp \  
     openglwindow.cpp \
     clmanager.cpp \
     particlemanager.cpp \

@@ -11,12 +11,7 @@ ParticleSysWindow::ParticleSysWindow(QWidget *parent) : QOpenGLWidget(parent)
     QSurfaceFormat::setDefaultFormat(format);
     setFormat(format);
     setMouseTracking(true);
-    m_fpsLabel = new QLabel(this);
-    m_fpsLabel->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-    m_fpsLabel->setText("00");
-    m_fpsLabel->setStyleSheet("QLabel { color : green; }");
-    m_fpsLabel->setIndent(width() - 20);
-    
+    m_time.start();
     // QTimer* fpsTimer = new QTimer();
 
     // QObject::connect(fpsTimer, SIGNAL(timeout()), this, SLOT(showFps()));
@@ -38,7 +33,7 @@ ParticleSysWindow::~ParticleSysWindow()
 void ParticleSysWindow::showFPS()
 {
     m_fpsLabel->setText(QString::number(m_fps));
-    m_fps = 0;
+    // m_fps = 0;
 }
 
 void ParticleSysWindow::initializeGL()
@@ -46,6 +41,11 @@ void ParticleSysWindow::initializeGL()
     std::string vertexShaderSource, fragmentShaderSource;
     CLManager &clManager = CLManager::getInstance();
 
+    m_fpsLabel = new QLabel(this);
+    m_fpsLabel->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+    m_fpsLabel->setText("00");
+    m_fpsLabel->setStyleSheet("QLabel { color : green; }");
+    m_fpsLabel->setIndent(width() - 20);
     initializeOpenGLFunctions();
     clManager.initCL(context());
     vertexShaderSource = fileToString(VERTEX_SHADER_SRC);
@@ -61,7 +61,7 @@ void ParticleSysWindow::initializeGL()
     m_program->bind();
 
     int sizeParticleBuffer = (GLuint)PARTICLES_COUNT * sizeof(Particle);
-    
+
     printf("Generate buffers.\n");
 
     // Create VAO
@@ -73,15 +73,15 @@ void ParticleSysWindow::initializeGL()
 
     m_posVBO.create();
     m_posVBO.bind();
-    m_posVBO.setUsagePattern( QOpenGLBuffer::StreamDraw );
+    m_posVBO.setUsagePattern(QOpenGLBuffer::StreamDraw);
     m_posVBO.allocate(sizeParticleBuffer);
     // m_posVBO.allocate(vertices, sizeParticleBuffer);
-    m_program->enableAttributeArray( m_posAttr );
+    m_program->enableAttributeArray(m_posAttr);
     // m_program->setAttributeBuffer( m_posAttr, GL_FLOAT, 0, 3, sizeof(Particle) );
-    m_program->enableAttributeArray( m_colAttr );
-    m_program->setAttributeBuffer( m_posAttr, GL_FLOAT, 0, 3, sizeof(Particle) );
-    m_program->setAttributeBuffer( m_colAttr, GL_FLOAT, 1 * sizeof(cl_float3), 3, sizeof(Particle) );
-    
+    m_program->enableAttributeArray(m_colAttr);
+    m_program->setAttributeBuffer(m_posAttr, GL_FLOAT, 0, 3, sizeof(Particle));
+    m_program->setAttributeBuffer(m_colAttr, GL_FLOAT, 1 * sizeof(cl_float3), 3, sizeof(Particle));
+
     /////////////////////////// COLOR BUFFER ///////////////////////////////////
     // m_program->setAttributeBuffer( m_colAttr, GL_FLOAT, 0, 3 );
 
@@ -95,7 +95,7 @@ void ParticleSysWindow::initializeGL()
 void ParticleSysWindow::resizeGL(int w, int h)
 {
     m_projection.setToIdentity();
-    const qreal retinaScale = devicePixelRatio();    
+    const qreal retinaScale = devicePixelRatio();
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
     m_projection.perspective(60.0f, w / float(h), 0.01f, 1000.0f);
     m_projection.translate(0, 0, -2);
@@ -113,7 +113,7 @@ void ParticleSysWindow::paintGL()
     // printf("{ %f %f %f }\n", gravityVec[0], gravityVec[1], gravityVec[2]);
     if (m_rotate)
         m_projection.rotate(100.0f * m_frame / 60.0, 0, 1, 0);
-        // m_projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    // m_projection.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
     if (m_shapeUpdated)
     {
         clManager.setShape(m_initShape);
@@ -147,6 +147,13 @@ void ParticleSysWindow::paintGL()
     m_vao.bind();
     glDrawArrays(GL_POINTS, 0, PARTICLES_COUNT);
     m_vao.release();
+    ++m_frame;
+    if (m_time.elapsed() >= 1000)
+    {
+        m_fps = m_frame / (float(m_time.elapsed()) / 1000.0f);
+        m_fpsLabel->setText(QString::number(m_fps));
+    }
+    update();
     // glBindVertexArray(particleManager.m_vao);
     // glBindVertexArray(0);
 
@@ -168,27 +175,26 @@ void ParticleSysWindow::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
     {
-        case Qt::Key_Space:
-            m_update = !m_update;
-            m_shapeUpdating = false;
-            break ;
-        case Qt::Key_C:
-            m_initShape = 1;
-            m_shapeUpdated = true;
-            m_update = true;
-            break ;
-        case Qt::Key_V:
-            m_initShape = 2;
-            m_shapeUpdated = true;
-            m_update = true;
-            break ;
-        case Qt::Key_F:
-            m_followMouse = !m_followMouse;
-            break ;
-        case Qt::Key_R:
-            m_rotate = !m_rotate;
-            break ;
-        default:
-            ;
+    case Qt::Key_Space:
+        m_update = !m_update;
+        m_shapeUpdating = false;
+        break;
+    case Qt::Key_C:
+        m_initShape = 1;
+        m_shapeUpdated = true;
+        m_update = true;
+        break;
+    case Qt::Key_V:
+        m_initShape = 2;
+        m_shapeUpdated = true;
+        m_update = true;
+        break;
+    case Qt::Key_F:
+        m_followMouse = !m_followMouse;
+        break;
+    case Qt::Key_R:
+        m_rotate = !m_rotate;
+        break;
+    default:;
     }
 }

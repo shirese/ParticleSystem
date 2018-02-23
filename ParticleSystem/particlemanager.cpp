@@ -49,11 +49,11 @@ void ParticleManager::generateBuffers(GLuint posAttr, GLuint colAttr)
     // glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     // glBufferData(GL_ARRAY_BUFFER, sizeParticleBuffer, vertices, GL_STREAM_DRAW);
     m_posVBO.create();
-    m_posVBO.setUsagePattern( QOpenGLBuffer::StreamDraw );
+    m_posVBO.setUsagePattern( QOpenGLBuffer::DynamicDraw );
     m_posVBO.allocate(sizeParticleBuffer);
 
     m_colVBO.create();
-    m_colVBO.setUsagePattern( QOpenGLBuffer::StreamDraw );
+    m_colVBO.setUsagePattern( QOpenGLBuffer::DynamicDraw );
     m_colVBO.bind();
     m_colVBO.allocate(sizeColorBuffer);
     /* Gen and Lock col VBO */
