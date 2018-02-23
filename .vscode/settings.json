@@ -11,6 +11,15 @@
         "set": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "vector": "cpp"
-    }
+        "vector": "cpp",
+        "ios": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "typeinfo": "cpp",
+        "algorithm": "cpp",
+        "type_traits": "cpp"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

@@ -1,5 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   clmanager.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/22 11:21:37 by chaueur           #+#    #+#             */
+/*   Updated: 2018/02/22 19:02:12 by chaueur          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "clmanager.h"
-#include "utils.h"
+
+CLManager::~CLManager()
+{
+
+};
 
 void CLManager::initCL()
 {
@@ -107,7 +123,7 @@ void CLManager::initCL()
 		printf("Error: Failed to retrieve kernel work group info! %d\n", err);
 		exit(-1);
 	}
-	printf("Init kernel maximum Workgroup Size '%d'\n", m_maxWorkGroupSize);
+	printf("Init kernel maximum Workgroup Size '%zu'\n", m_maxWorkGroupSize);
 
 	m_maxWorkGroupSize = m_updateKernel.getWorkGroupInfo<CL_KERNEL_WORK_GROUP_SIZE>(default_device, &err);
 	if (err != CL_SUCCESS)
@@ -115,55 +131,56 @@ void CLManager::initCL()
 		printf("Error: Failed to retrieve kernel work group info! %d\n", err);
 		exit(-1);
 	}
-	printf("Update kernel maximum Workgroup Size '%d'\n", m_maxWorkGroupSize);
+	printf("Update kernel maximum Workgroup Size '%zu'\n", m_maxWorkGroupSize);
 
 }
 
-void CLManager::computeMemory(QOpenGLBuffer &posVBO)
+void CLManager::computeMemory(GLuint posVBO)
 {
     int err;
 
     printf("Allocating buffers on compute device.\n");
-    m_bufferVBO = cl::BufferGL(m_context, CL_MEM_READ_WRITE, posVBO.bufferId(), &err);
+    printf("[[%u]]\n", posVBO);
+    m_bufferVBO = cl::BufferGL(m_context, CL_MEM_READ_WRITE, posVBO, &err);
     if (err < 0)
     {
-        printf("Couldn't create a buffer object from the VBO.");
+        printf("Couldn't create a buffer object from the VBO.\n");
         exit(-1);
     }
     m_bufferShape = cl::Buffer(m_context, CL_MEM_READ_WRITE, sizeof(short), NULL, &err);
     if (err < 0)
     {
-        printf("Couldn't create shape buffer.");
+        printf("Couldn't create shape buffer.\n");
         exit(-1);
     }
     m_bufferGravity = cl::Buffer(m_context, CL_MEM_READ_ONLY, sizeof(float) * 3, NULL, &err);
     if (err < 0)
     {
-        printf("Couldn't create gravity buffer.");
+        printf("Couldn't create gravity buffer.\n");
         exit(-1);
     }
     err = m_initKernel.setArg(0, m_bufferVBO);
     if (err < 0)
     {
-        printf("Couldn't set init kernel arg.");
+        printf("Couldn't set init kernel arg.\n");
         exit(-1);
     }
     err = m_initKernel.setArg(1, m_bufferShape);
     if (err < 0)
     {
-        printf("Couldn't set init kernel arg.");
+        printf("Couldn't set init kernel arg.\n");
         exit(-1);
     }
     err = m_updateKernel.setArg(0, m_bufferVBO);
     if (err < 0)
     {
-        printf("Couldn't set update kernel arg (VBO).");
+        printf("Couldn't set update kernel arg (VBO).\n");
         exit(-1);
     }
     err = m_updateKernel.setArg(1, m_bufferGravity);
     if (err < 0)
     {
-        printf("Couldn't set update kernel arg (buffer gravity).");
+        printf("Couldn't set update kernel arg (buffer gravity).\n");
         exit(-1);
     }
 }
@@ -218,6 +235,7 @@ void CLManager::runInitKernel()
     int err;
 	cl::Event event;
     
+    printf("SET %hd\n", shape);
 	glFinish();
     m_vbos.push_back(m_bufferVBO);
 	/* Execute the kernel */
@@ -258,4 +276,4 @@ void CLManager::runInitKernel()
 		printf("Couldn't read into shape buffer: %d", err);
 		exit(-1);
     }
-}
+}                                                                                                                                                                                                                                                                                                                                                   

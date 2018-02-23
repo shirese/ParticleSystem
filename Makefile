@@ -6,25 +6,26 @@
 #    By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/02/21 10:54:15 by chaueur           #+#    #+#              #
-#    Updated: 2018/02/21 13:19:32 by chaueur          ###   ########.fr        #
+#    Updated: 2018/02/22 16:52:41 by chaueur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			= ParticleSystem
 TEST			= test
-CC				= clang++
+CC				= clang++ -std=c++11
 
 FLAG			= -O2 -Wall -Werror -Wextra -pedantic -Wno-missing-field-initializers
 FRAMEWORK		= 	-framework Cocoa -framework IOKit \
 					-framework CoreVideo -framework OpenCL -framework OpenGL
-INCS			= -I include -I /Users/chaueur/.brew/Cellar/glfw/3.2.1/include/ -I ft_printf/inc/
+INCS			= 	-I include -I /Users/chaueur/.brew/Cellar/glfw/3.2.1/include/ \
+					-I ft_printf/inc/ -I glm
 
 DIR_SRC			= src/
 
-DIR_INC			= inc/
+DIR_INC			= include/
 DIR_OBJ			= obj/
 
-SRC_MAIN		= main.cpp utils.cpp window.cpp
+SRC_MAIN		= main.cpp particlemanager.cpp clmanager.cpp utils.cpp window.cpp
 
 SRCS			= $(SRC_MAIN)
 

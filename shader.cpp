@@ -6,11 +6,11 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:33:11 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/21 12:35:43 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/02/22 15:54:54 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <OpenGL/OpenGL.h>
+#include <OpenGL/OpenGL3.h>
 #include <cstdlib>
 #include <stdio.h>
 
