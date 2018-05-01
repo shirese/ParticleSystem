@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/22 11:21:31 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/22 16:49:59 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/01 11:31:13 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define KERNEL_MAIN						("/Users/chaueur/ParticleSystem/kernel/main.cl")
+#define KERNEL_INIT						("/Users/chaueur/ParticleSystem/kernel/init.cl")
 #define KERNEL_HEADER					("/Users/chaueur/ParticleSystem/kernel/header.cl")
 #define KERNEL_UPDATE					("/Users/chaueur/ParticleSystem/kernel/update.cl")
 #define KERNEL_INIT_METHOD_NAME			("initialize")

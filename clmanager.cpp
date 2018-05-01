@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/22 11:21:37 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/23 11:48:28 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/01 16:08:21 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ void CLManager::initCL()
     if (source[0].empty())
         exit(-1);
     sources.push_back({source[0].c_str(), source[0].length()});
-    printf("Loading kernel main from file '%s'...\n", KERNEL_MAIN);
-    source[1] = fileToString(KERNEL_MAIN);
+    printf("Loading kernel main from file '%s'...\n", KERNEL_INIT);
+    source[1] = fileToString(KERNEL_INIT);
     if (source[1].empty())
         exit(-1);
     sources.push_back({source[1].c_str(), source[1].length()});
@@ -140,7 +140,6 @@ void CLManager::computeMemory(GLuint posVBO)
     int err;
 
     printf("Allocating buffers on compute device.\n");
-    printf("[[%u]]\n", posVBO);
     m_bufferVBO = cl::BufferGL(m_context, CL_MEM_READ_WRITE, posVBO, &err);
     if (err < 0)
     {

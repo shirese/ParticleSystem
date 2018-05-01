@@ -6,7 +6,7 @@
 #    By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/02/21 10:54:15 by chaueur           #+#    #+#              #
-#    Updated: 2018/02/22 16:52:41 by chaueur          ###   ########.fr        #
+#    Updated: 2018/05/01 14:27:42 by chaueur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,9 @@ CC				= clang++ -std=c++11
 
 FLAG			= -O2 -Wall -Werror -Wextra -pedantic -Wno-missing-field-initializers
 FRAMEWORK		= 	-framework Cocoa -framework IOKit \
-					-framework CoreVideo -framework OpenCL -framework OpenGL
-INCS			= 	-I include -I /Users/chaueur/.brew/Cellar/glfw/3.2.1/include/ \
+					-framework CoreVideo -framework OpenCL -framework OpenGL \
+					-framework SDL2
+INCS			= 	-I include -I /Library/Frameworks/SDL2.framework/Headers \
 					-I ft_printf/inc/ -I glm
 
 DIR_SRC			= src/
@@ -38,21 +39,18 @@ OBJ				= $(addprefix $(DIR_OBJ),$(OBJS))
 VPATH			= $(DIR_SRC)
 
 LIBFTPRINTF		= ft_printf/libftprintf.a
-GLFW			= -L/Users/chaueur/.brew/Cellar/glfw/3.2.1/lib/ -lglfw
 
 all: $(NAME)
 
-debug: FLAG += -g -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-uninitialized
+debug: FLAG += -g -Wno-unused-parameter -Wno-unused-function \
+-Wno-unused-variable -Wno-uninitialized -Wno-unused-private-field
 debug: $(NAME)
 
-$(NAME): $(LIBFTPRINTF) $(GLFW) $(OBJ)
+$(NAME): $(LIBFTPRINTF) $(OBJ)
 	$(CC) $(FRAMEWORK) $^ -o $@
 
 $(LIBFTPRINTF):
 	@make -C ft_printf/
-
-$(GLFW):
-	@brew install glfw
 
 $(DIR_OBJ)%.o: %.cpp
 	@mkdir $(DIR_OBJ) 2> /dev/null || true

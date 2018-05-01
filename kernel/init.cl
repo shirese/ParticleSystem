@@ -1,14 +1,46 @@
-#define SPHERE_RADIUS	1.5f
-
-void kernel initialize_sphere(__global vec3 pos)
+void kernel initialize(__global Particle *particles, __global short *shape)
 {
 	int i = get_global_id(0);
+	float3 dir;
+
+	particles += i;
+	if (*shape == 1)
+	{
+		float ga = M_PI * (3.0 - sqrt(5.));
+		float theta = ga * (float)i;
+		float z = ( 1.0 - (1.0 / (float)PARTICLES_COUNT) ) * ( 1.0 - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1.0 ) ) );
+		float radius = sqrt(1.0	 - z * z);
+		dir.x = radius * cos(theta);
+		dir.y = radius * sin(theta);
+		dir.z = z;
+		dir = particles->position - dir;
+		// if (distance(test, particles->position) == 0)
+		// 	*shape = 0;
+		particles->position = (float3)0.4 * dir;
+	}
+	else if (*shape == 2)
+	{
+		uint	subDivCount = cbrt((float)PARTICLES_COUNT);
+		uint	x = fmod((float)i, (float)subDivCount);
+		uint	y = fmod((float)i / subDivCount, (float)subDivCount);
+		uint	z = i / (subDivCount * subDivCount);
+		float	subDivSize = SQUARE_SIZE / subDivCount;
+		float	subDivSize2 = subDivSize / 2.0f;
+		dir.x = x * subDivSize - 0.5 + subDivSize2;
+		dir.y = y * subDivSize - 0.5 + subDivSize2;
+		dir.z = z * subDivSize - 0.5 + subDivSize2;
+		dir = particles->position - dir;
+		// test = (float3)0.4 * dir;
+		// if (distance(test, particles->position) == 0)
+		// 	*shape = 0;
+		particles->position = (float3)0.4 * dir;
+	}
+	particles->color.x = 0.;
+	particles->color.y = 0.;
+	particles->color.z = 0.;
 	//float phi = ( sqrt(5.f) + 1.f ) / 2.f - 1.f; // golden ratio
 	//float ga = phi * 2.f * M_PI;
-	float ga = M_PI * (3. - sqrt(5.));
-	float theta = ga * (float)i;
-	float z = ( 1. - (1. / (float)PARTICLES_COUNT) ) * ( 1. - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1. ) ) );
-	float radius = sqrt(1. - z * z);
+
 	/*uint	subDivCount = cbrt((float)PARTICLES_COUNT);
 	float2	delta = (float2)(M_PI * 2 / subDivCount, M_PI / subDivCount);
 	float	radiusDelta = SPHERE_RADIUS / subDivCount;
@@ -38,9 +70,5 @@ void kernel initialize_sphere(__global vec3 pos)
 	particles[i].position.x = SPHERE_RADIUS * cos(lat) * cos(lon);
 	particles[i].position.y = SPHERE_RADIUS * cos(lat) * sin(lon);
 	particles[i].position.z = SPHERE_RADIUS * sin(lat);*/
-
-	particles[i].position.x = radius * cos(theta);
-	particles[i].position.y = radius * sin(theta);
-	particles[i].position.z = z;
 	//printf("%f %f %f\n", particles[i].position.x, particles[i].position.y, particles[i].position.z);
 }

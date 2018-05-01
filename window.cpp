@@ -6,50 +6,56 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/23 15:12:54 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/01 17:10:56 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "window.h"
 
-Window::Window() : initShape(1),
-                   m_frameCount(0),
-                   m_currTime(0),
-                   m_lastTime(glfwGetTime()),
-                   m_shapeUpdated(false),
-                   m_shapeUpdating(false),
-                   m_update(false),
-                   m_followMouse(true),
-                   m_rotate(false)
+Window::Window() :  initShape(1),
+                    m_width(1280),
+                    m_height(1050),
+                    m_frameCount(0),
+                    m_currTime(0),
+                    m_lastTime(SDL_GetTicks()),
+                    m_isRunning(true),
+                    m_shapeUpdated(false),
+                    m_shapeUpdating(false),
+                    m_update(true),
+                    m_followMouse(true),
+                    m_rotate(false)
 {
-    if (!glfwInit())
-    {
-        fprintf(stderr, "Error glfwInit\n");
-        return;
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+        std::cout << "Init SDL error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    window = glfwCreateWindow(1200, 1080, "Simple example", NULL, NULL);
-    if (!window)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    window = SDL_CreateWindow("Particle System v0.0", SDL_WINDOWPOS_UNDEFINED, \
+        SDL_WINDOWPOS_UNDEFINED, m_width, m_height, SDL_WINDOW_OPENGL);
+    if (window == 0)
     {
-        fprintf(stderr, "Error glfwCreateWindow\n");
-        glfwTerminate();
-        return;
+        std::cout << "Init SDL window error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+    }
+    GLContext = SDL_GL_CreateContext(window);
+    if (GLContext == 0)
+    {
+        std::cout << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        SDL_Quit();
     }
     setCamera();
-    glfwSetWindowUserPointer(window, this);
-    glfwSetKeyCallback(window, keyCallback);
-    glfwSetCursorPosCallback(window, cursorCallback);
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
 }
 
 Window::~Window()
 {
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    SDL_GL_DeleteContext(GLContext);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 void Window::loadShaders()
@@ -84,9 +90,9 @@ void Window::loadShaders()
 
 void Window::setCamera()
 {
-    glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 1200 / float(1080), 0.01f, 1000.0f);
+    glm::mat4 Projection = glm::perspective(glm::radians(60.0f), m_width / float(m_height), 0.01f, 1000.0f);
     glm::mat4 View = glm::lookAt(
-    glm::vec3(4,3,3), // Camera is at (4,3,3), in World Space
+    glm::vec3(0,0,3), // Camera is at (4,3,3), in World Space
     glm::vec3(0,0,0), // and looks at the origin
     glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
@@ -100,39 +106,33 @@ void Window::setCamera()
 
 void Window::render(CLManager &clManager, ParticleManager &particleManager)
 {
-    while (!glfwWindowShouldClose(window))
-    {
-        m_currTime = glfwGetTime();
-        m_frameCount++;
-        // If a second has passed.
-        if ( m_currTime - m_lastTime >= 1.0 )
-        {
-            printf("FPS %d\n", m_frameCount);
-            // Display the frame count here any way you want.
-            m_frameCount = 0;
-            m_lastTime += 1.0;
-        }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLuint err;
 
-        GLuint err;
-        if (m_shapeUpdated)
-        {
-            clManager.setShape(initShape);
-            clManager.runInitKernel();
-            m_shapeUpdated = false;
-            m_shapeUpdating = true;
-        }
-        else if (clManager.shape == 0)
-        {
-            m_shapeUpdated = false;
-            m_shapeUpdating = false;
-            initShape = 0;
-            m_update = false;
-            m_followMouse = false;
-        }
-        if (m_shapeUpdating)
-            clManager.runInitKernel();
-        else if (m_update)
+    while (m_isRunning)
+    {
+        SDL_PollEvent(&m_event);    
+        runKeyCallback();
+        runCursorCallback();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // if (m_shapeUpdated)
+        // {
+        //     clManager.setShape(initShape);
+        //     clManager.runInitKernel();
+        //     m_shapeUpdated = false;
+        //     m_shapeUpdating = true;
+        // }
+        // else if (clManager.shape == 0)
+        // {
+        //     m_shapeUpdated = false;
+        //     m_shapeUpdating = false;
+        //     initShape = 0;
+        //     m_update = false;
+        //     m_followMouse = false;
+        // }
+        // if (m_shapeUpdating)
+        //     clManager.runInitKernel();
+        /*else */
+        if (m_update)
         {
             if (m_followMouse)
             {
@@ -153,8 +153,7 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
         err = glGetError();
         if (err != GL_NO_ERROR)
             printf("Error: OpenGL Get Error: %d\n", err);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        SDL_GL_SwapWindow(window);
     }
     // glBindVertexArray(particleManager.m_vao);
     // glBindVertexArray(0);
@@ -162,46 +161,46 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
     // m_program->release();
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void Window::runCursorCallback()
 {
-    void *data = glfwGetWindowUserPointer(window);
-    Window *w = static_cast<Window *>(data);
-    if (action == GLFW_PRESS)
+    SDL_GetMouseState(&m_mousePosX, &m_mousePosY);
+}
+
+void Window::runKeyCallback()
+{
+    if (m_event.type == SDL_QUIT)
     {
-        switch (key)
+        m_isRunning = false;
+        return ;
+    }
+    else if (m_event.type == SDL_KEYDOWN)
+    {
+        switch (m_event.key.keysym.sym)
         {
-            case GLFW_KEY_SPACE:
-                w->m_shapeUpdating = false;
-                w->m_update = !w->m_update;
+            case SDLK_ESCAPE:
+                m_isRunning = false;
                 break;
-            case GLFW_KEY_C:
-                w->initShape = 1;
-                w->m_shapeUpdated = true;
-                w->m_update = true;
+            // case SDLK_SPACE:
+            //     m_shapeUpdating = false;
+            //     m_update = !m_update;
+            //     break;
+            case SDLK_c:
+                initShape = 1;
+                // m_shapeUpdated = true;
+                // m_update = true;
                 break;
-            case GLFW_KEY_V:
-                w->initShape = 2;
-                w->m_shapeUpdated = true;
-                w->m_update = true;
+            case SDLK_v:
+                initShape = 2;
+                // m_shapeUpdated = true;
+                // m_update = true;
                 break;
-            case GLFW_KEY_F:
-                w->m_followMouse = !w->m_followMouse;
+            case SDLK_f:
+                m_followMouse = !m_followMouse;
                 break;
-            case GLFW_KEY_R:
-                w->m_rotate = !w->m_rotate;
+            case SDLK_r:
+                m_rotate = !m_rotate;
                 break;
             default:;
         }
     }
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-
-void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos)
-{
-    void *data = glfwGetWindowUserPointer(window);
-    Window *w = static_cast<Window *>(data);
-
-    w->m_mousePosX = xpos;
-    w->m_mousePosY = ypos;
 }

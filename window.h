@@ -6,16 +6,13 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:36:16 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/23 15:08:31 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/01 14:23:50 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WINDOW_H
 
 #define WINDOW_H
-
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
 
 #include "clmanager.h"
 #include "particlemanager.h"
@@ -29,6 +26,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
+#include <SDL.h>
 
 class Window
 {
@@ -39,17 +37,22 @@ public:
   void loadShaders();
   void setCamera();
   void render(CLManager &clManager, ParticleManager &particleManager);
-  static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-  static void cursorCallback(GLFWwindow *window, double xpos, double ypos);
-  GLFWwindow *window;
+  void runKeyCallback();
+  void runCursorCallback();
+  SDL_GLContext GLContext;
+  SDL_Window *window;
   GLuint shaderProgram;
   short initShape;
 
 private:
+  unsigned int m_width;
+  unsigned int m_height;
   int m_frameCount;
   double m_currTime;
   double m_lastTime;
-  double m_mousePosX, m_mousePosY;
+  int m_mousePosX, m_mousePosY;
+  SDL_Event m_event;
+  bool m_isRunning;
   bool m_shapeUpdated;
   bool m_shapeUpdating;
   bool m_update;
