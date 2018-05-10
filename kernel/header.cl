@@ -1,5 +1,5 @@
 #define GRAV_RADIUS 0.1f
-#define PARTICLES_COUNT 1024000
+#define PARTICLES_COUNT 512000
 #define SQUARE_SIZE		5.0f
 #define SPHERE_RADIUS	10.0f
 #define G 9.81f

@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/22 11:22:45 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/22 18:56:19 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/10 12:26:20 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 # define PARTICLEMANAGER
 
+# define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 # include <OpenGL/gl3.h>
 
 # include <glm/vec3.hpp> // glm::vec3
-
 class ParticleManager
 {
     public:

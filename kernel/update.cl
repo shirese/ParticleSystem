@@ -18,28 +18,12 @@ void kernel update_position(__global Particle *particles, __constant float3 *gra
 	float3				gtest;
 
 	particles += i;
-	gtest = float3(2, 2, -1);
-	dir = gtest - particles->position;
-	dist = distance(gtest, particles->position);
-	if (dist < 0.001)
-		dir *= (float3)0.001;
-	if (dist < 0.01)
-		dir *= (float3)0.05;
-	if (dist < 0.03)
-		dir *= (float3)0.01;
-	if (dist < 1.0)
-		dir *= (float3)0.1;
-	if (dist < 10.0)
-		dir *= (float3)0.1;
-	if (dist > 0)
-		particles->position += dir;
-	else
-		particles->position -= dir;
-	// if (dist <= GRAV_RADIUS)
-		// return ;
-	// force = ATTRACT / (dist * dist);
-	// particles->velocity += (*gravityCenter - particles->position) * force;
-	// particles->position += particles->velocity;
+	dir = *gravityCenter - particles->position;
+	dist = distance(*gravityCenter, particles->position);
+	if (dist <= GRAV_RADIUS + 0.05)
+		return ;
+	force = 0.3924 / (dist * dist);
+	particles->position += (*gravityCenter - particles->position) * force;
 	// dist *= 0.42f;
 	// particles->color.x = 1 - dist;
 	// particles->color.y = 1 - dist;

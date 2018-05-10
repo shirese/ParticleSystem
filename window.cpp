@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/01 17:10:56 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/10 14:39:54 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void Window::setCamera()
 {
     glm::mat4 Projection = glm::perspective(glm::radians(60.0f), m_width / float(m_height), 0.01f, 1000.0f);
     glm::mat4 View = glm::lookAt(
-    glm::vec3(0,0,3), // Camera is at (4,3,3), in World Space
+    glm::vec3(0,0,1), // Camera is at (4,3,3), in World Space
     glm::vec3(0,0,0), // and looks at the origin
     glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
@@ -114,24 +114,23 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
         runKeyCallback();
         runCursorCallback();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // if (m_shapeUpdated)
-        // {
-        //     clManager.setShape(initShape);
-        //     clManager.runInitKernel();
-        //     m_shapeUpdated = false;
-        //     m_shapeUpdating = true;
-        // }
-        // else if (clManager.shape == 0)
-        // {
-        //     m_shapeUpdated = false;
-        //     m_shapeUpdating = false;
-        //     initShape = 0;
-        //     m_update = false;
-        //     m_followMouse = false;
-        // }
-        // if (m_shapeUpdating)
-        //     clManager.runInitKernel();
-        /*else */
+        if (m_shapeUpdated)
+        {
+            clManager.setShape(initShape);
+            clManager.runInitKernel();
+            m_shapeUpdated = false;
+            m_shapeUpdating = true;
+        }
+        else if (clManager.shape == 0)
+        {
+            m_shapeUpdated = false;
+            m_shapeUpdating = false;
+            initShape = 0;
+            m_update = false;
+            m_followMouse = false;
+        }
+        if (m_shapeUpdating)
+            clManager.runInitKernel();
         if (m_update)
         {
             if (m_followMouse)
@@ -180,19 +179,19 @@ void Window::runKeyCallback()
             case SDLK_ESCAPE:
                 m_isRunning = false;
                 break;
-            // case SDLK_SPACE:
-            //     m_shapeUpdating = false;
-            //     m_update = !m_update;
-            //     break;
+            case SDLK_SPACE:
+                m_shapeUpdating = false;
+                m_update = !m_update;
+                break;
             case SDLK_c:
                 initShape = 1;
-                // m_shapeUpdated = true;
-                // m_update = true;
+                m_shapeUpdated = true;
+                m_update = true;
                 break;
             case SDLK_v:
                 initShape = 2;
-                // m_shapeUpdated = true;
-                // m_update = true;
+                m_shapeUpdated = true;
+                m_update = true;
                 break;
             case SDLK_f:
                 m_followMouse = !m_followMouse;
