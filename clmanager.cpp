@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/22 11:21:37 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/01 16:08:21 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/10 16:41:54 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void CLManager::computeMemory(GLuint posVBO)
         printf("Couldn't create shape buffer.\n");
         exit(-1);
     }
-    m_bufferGravity = cl::Buffer(m_context, CL_MEM_READ_ONLY, sizeof(float) * 3, NULL, &err);
+    m_bufferGravity = cl::Buffer(m_context, CL_MEM_READ_ONLY, sizeof(float) * 2, NULL, &err);
     if (err < 0)
     {
         printf("Couldn't create gravity buffer.\n");
@@ -203,7 +203,7 @@ void CLManager::runUpdateKernel(float *gravityPoint)
 	}
 
 	// err = clEnqueueWriteBuffer(computeCommands, gravityPointMemObject, CL_TRUE,  0, sizeof(float) * 3, test, 0, NULL, NULL);
-    err = m_cmdQueue.enqueueWriteBuffer(m_bufferGravity, CL_TRUE, 0, sizeof(float) * 3, gravityPoint, nullptr, &event);
+    err = m_cmdQueue.enqueueWriteBuffer(m_bufferGravity, CL_TRUE, 0, sizeof(float) * 2, gravityPoint, nullptr, &event);
 	if (err < 0) {
 		printf("Couldn't write into the gravity point openCL buffer: %d", err);
 		exit(-1);

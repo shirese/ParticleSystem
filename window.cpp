@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/10 14:39:54 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/10 16:42:14 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,17 +133,18 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
             clManager.runInitKernel();
         if (m_update)
         {
-            if (m_followMouse)
-            {
+            // if (m_followMouse)
+            // {
                 // TMP
-                particleManager.gravityVec.x = (2.0 * m_mousePosX / 1200 - 1.0);
-                particleManager.gravityVec.y = (1.0 - (2.0 * m_mousePosY) / 1080);
-                particleManager.gravityVec.z = 0;
+                // particleManager.gravityVec.x = (2.0 * m_mousePosX / 1200 - 1.0);
+                // particleManager.gravityVec.y = (1.0 - (2.0 * m_mousePosY) / 1080);
+                // particleManager.gravityVec.z = 0;
                 // m_gravityVec.setZ(0);
-            }
-            float *grav = hitPlane(particleManager.gravityVec, 2);
+            // }
+            float grav[2];
+            grav[0] = (2.0 * m_mousePosX / 1200 - 1.0);
+            grav[1] = (1.0 - (2.0 * m_mousePosY) / 1080);
             clManager.runUpdateKernel(grav);
-            delete grav;
         }
         glUniformMatrix4fv(particleManager.getMatrixUniform(), 1, GL_FALSE, &m_project[0][0]);
         glBindVertexArray(particleManager.getVAO());
