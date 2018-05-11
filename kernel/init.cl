@@ -4,6 +4,9 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 	float3 dir;
 
 	particles += i;
+	particles->color.x = 0;
+	particles->color.y = 1;
+	particles->color.z = 0;
 	if (*shape == 1)
 	{
 		float ga = M_PI * (3.0 - sqrt(5.));
@@ -35,9 +38,6 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 		// 	*shape = 0;
 		particles->position = (float3)0.4 * dir;
 	}
-	particles->color.x = 1.;
-	particles->color.y = 0.;
-	particles->color.z = 0.;
 	//float phi = ( sqrt(5.f) + 1.f ) / 2.f - 1.f; // golden ratio
 	//float ga = phi * 2.f * M_PI;
 

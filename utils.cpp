@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:40:44 by chaueur           #+#    #+#             */
-/*   Updated: 2018/02/23 12:25:45 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/11 11:01:17 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,24 +66,24 @@ GLuint createShader(std::string str, int type)
     return (shader);
 }
 
-float *hitPlane(glm::vec3 origin, float d)
-{
-    glm::vec3 direction(origin.x, origin.y, -1);
-    glm::vec3 planeOrigin(0, 0, -2);
-    glm::vec3 planeNormal(0, 0, 1);
-    glm::vec3 ret;
-    float t;
-    float *p;
+// float *hitPlane(glm::vec3 origin, float d)
+// {
+//     glm::vec3 direction(origin.x, origin.y, -1);
+//     glm::vec3 planeOrigin(0, 0, -2);
+//     glm::vec3 planeNormal(0, 0, 1);
+//     glm::vec3 ret;
+//     float t;
+//     float *p;
 
-    t = glm::dot(planeOrigin - origin, planeNormal) / glm::dot(planeNormal, direction);
-    if (t >= 0.0001)
-    {
-        ret = origin + t * direction;
-        p = new float[3];
-        p[0] = ret.x;
-        p[1] = ret.y;
-        p[2] = ret.z;
-        return (p);
-    }
-    return (0);
-}
+//     t = glm::dot(planeOrigin - origin, planeNormal) / glm::dot(planeNormal, direction);
+//     if (t >= 0.0001)
+//     {
+//         ret = origin + t * direction;
+//         p = new float[3];
+//         p[0] = ret.x;
+//         p[1] = ret.y;
+//         p[2] = ret.z;
+//         return (p);
+//     }
+//     return (0);
+// }

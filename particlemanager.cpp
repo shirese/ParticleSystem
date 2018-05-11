@@ -14,7 +14,7 @@ ParticleManager::ParticleManager()
     // Alloc VBO
     glBufferData(GL_ARRAY_BUFFER, (GLuint)PARTICLES_COUNT * sizeof(Particle), 
         nullptr, (GLuint)GL_STREAM_DRAW);
-    // printf("[%f]\n", sizeof(Particle));
+    printf("[%lu]\n", sizeof(Particle));
 }
 
 ParticleManager::~ParticleManager()
@@ -30,5 +30,5 @@ void ParticleManager::setAttributes(GLuint shaderProgram)
     glEnableVertexAttribArray(m_posAttr);
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), BUFFER_OFFSET(0));
     glEnableVertexAttribArray(m_colAttr);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), BUFFER_OFFSET(3 * sizeof(float)));
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), BUFFER_OFFSET(sizeof(cl_float3)));
 }

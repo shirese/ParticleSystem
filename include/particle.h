@@ -11,6 +11,7 @@ class Particle
         Particle();
         cl_float3 position;
         cl_float3 color;
+        cl_float3 velocity;
 };
 
 #endif // PARTICLE_H
