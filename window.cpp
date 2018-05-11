@@ -6,7 +6,7 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/11 11:41:18 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/11 13:39:11 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Window::Window() :  initShape(1),
                     m_isRunning(true),
                     m_shapeUpdated(false),
                     m_shapeUpdating(false),
-                    m_update(true),
+                    m_update(false),
                     m_followMouse(true),
                     m_rotate(false)
 {
@@ -112,7 +112,8 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
     {
         SDL_PollEvent(&m_event);    
         runKeyCallback();
-        runCursorCallback();
+        if (m_followMouse)
+            runCursorCallback();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if (m_shapeUpdated)
         {
@@ -134,17 +135,8 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
         if (m_update)
         {
             float grav[2] = { 0 };
-            if (m_followMouse)
-            {
-                grav[0] = (2.0 * m_mousePosX / 1200 - 1.0);
-                grav[1] = (1.0 - (2.0 * m_mousePosY) / 1080);
-                // TMP
-                // particleManager.gravityVec.x = (2.0 * m_mousePosX / 1200 - 1.0);
-                // particleManager.gravityVec.y = (1.0 - (2.0 * m_mousePosY) / 1080);
-                // particleManager.gravityVec.z = 0;
-                // m_gravityVec.setZ(0);
-            }
-            
+            grav[0] = (2.0 * m_mousePosX / 1200 - 1.0);
+            grav[1] = (1.0 - (2.0 * m_mousePosY) / 1080);
             clManager.runUpdateKernel(grav);
         }
         glUniformMatrix4fv(particleManager.getMatrixUniform(), 1, GL_FALSE, &m_project[0][0]);
@@ -188,12 +180,16 @@ void Window::runKeyCallback()
             case SDLK_c:
                 initShape = 1;
                 m_shapeUpdated = true;
-                m_update = true;
+                m_update = false;
+                break;
+            case SDLK_s:
+                m_followMouse = false;
+                SDL_GetMouseState(&m_mousePosX, &m_mousePosY);
                 break;
             case SDLK_v:
                 initShape = 2;
                 m_shapeUpdated = true;
-                m_update = true;
+                m_update = false;
                 break;
             case SDLK_f:
                 m_followMouse = !m_followMouse;

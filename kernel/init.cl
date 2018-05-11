@@ -4,9 +4,9 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 	float3 dir;
 
 	particles += i;
-	particles->color.x = 0;
-	particles->color.y = 1;
-	particles->color.z = 0;
+	particles->color.x = 0.18;
+	particles->color.y = 0.85;
+	particles->color.z = 0.12;
 	if (*shape == 1)
 	{
 		float ga = M_PI * (3.0 - sqrt(5.));
