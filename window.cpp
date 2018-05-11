@@ -6,24 +6,25 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/11 13:39:11 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/11 18:24:02 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "window.h"
 
-Window::Window() :  initShape(1),
-                    m_width(1280),
-                    m_height(1050),
-                    m_frameCount(0),
-                    m_currTime(0),
-                    m_lastTime(SDL_GetTicks()),
-                    m_isRunning(true),
-                    m_shapeUpdated(false),
-                    m_shapeUpdating(false),
-                    m_update(false),
-                    m_followMouse(true),
-                    m_rotate(false)
+Window::Window() : initShape(1),
+                   m_width(1280),
+                   m_height(1050),
+                   m_frameCount(0),
+                   m_framePerSec(0),
+                   m_currTime(0),
+                   m_lastTime(SDL_GetTicks()),
+                   m_isRunning(true),
+                   m_shapeUpdated(false),
+                   m_shapeUpdating(false),
+                   m_update(false),
+                   m_followMouse(true),
+                   m_rotate(false)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -49,10 +50,12 @@ Window::Window() :  initShape(1),
         SDL_Quit();
     }
     setCamera();
+    m_frameTimes = new int[10];
 }
 
 Window::~Window()
 {
+    delete m_frameTimes;
     SDL_GL_DeleteContext(GLContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -104,12 +107,36 @@ void Window::setCamera()
     m_project = glm::translate(m_project, glm::vec3(0, 0, -2.0f));
 }
 
+void Window::computeFPS()
+{
+    int index;
+    int count;
+    int i;
+
+    i = -1;
+    index = m_frameCount % FRAME_VALUES;
+    m_currTime = SDL_GetTicks();
+    m_frameTimes[index] = m_currTime - m_lastTime;
+    m_lastTime = m_currTime;
+    m_frameCount++;
+    if (m_frameCount < FRAME_VALUES)
+        count = m_frameCount;
+    else
+        count = FRAME_VALUES;
+    m_framePerSec = 0;
+    while (++i < count)
+        m_framePerSec += m_frameTimes[i];
+    m_framePerSec /= count;
+    m_framePerSec = 1000.0f / m_framePerSec;
+}
+
 void Window::render(CLManager &clManager, ParticleManager &particleManager)
 {
     GLuint err;
 
     while (m_isRunning)
     {
+        computeFPS();
         SDL_PollEvent(&m_event);    
         runKeyCallback();
         if (m_followMouse)
@@ -146,6 +173,8 @@ void Window::render(CLManager &clManager, ParticleManager &particleManager)
         err = glGetError();
         if (err != GL_NO_ERROR)
             printf("Error: OpenGL Get Error: %d\n", err);
+        sprintf(m_frameLabel, "%d", m_framePerSec);
+        SDL_SetWindowTitle(window, m_frameLabel);
         SDL_GL_SwapWindow(window);
     }
     // glBindVertexArray(particleManager.m_vao);

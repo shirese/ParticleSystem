@@ -5,13 +5,12 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 
 	particles += i;
 	particles->color.x = 0.18;
-	particles->color.y = 0.85;
-	particles->color.z = 0.12;
+	particles->color.y = 0.12;
+	particles->color.z = 0.65;
 	if (*shape == 1)
 	{
-		float ga = M_PI * (3.0 - sqrt(5.));
-		float theta = ga * (float)i;
-		float z = ( 1.0 - (1.0 / (float)PARTICLES_COUNT) ) * ( 1.0 - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1.0 ) ) );
+		float theta = GA * (float)i;
+		float z = Z_HELPER * ( 1.0 - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1.0 ) ) );
 		float radius = sqrt(1.0	 - z * z);
 		dir.x = radius * cos(theta);
 		dir.y = radius * sin(theta);

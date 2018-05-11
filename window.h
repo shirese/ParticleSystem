@@ -6,13 +6,15 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:36:16 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/01 14:23:50 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/11 18:23:16 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WINDOW_H
 
 #define WINDOW_H
+
+#define FRAME_VALUES 10
 
 #include "clmanager.h"
 #include "particlemanager.h"
@@ -27,6 +29,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 #include <SDL.h>
+#include <stdio.h>
 
 class Window
 {
@@ -34,6 +37,7 @@ class Window
 public:
   Window();
   ~Window();
+  void computeFPS();
   void loadShaders();
   void setCamera();
   void render(CLManager &clManager, ParticleManager &particleManager);
@@ -47,7 +51,10 @@ public:
 private:
   unsigned int m_width;
   unsigned int m_height;
+  char m_frameLabel[255];
   int m_frameCount;
+  int m_framePerSec;
+  int *m_frameTimes;
   double m_currTime;
   double m_lastTime;
   int m_mousePosX, m_mousePosY;

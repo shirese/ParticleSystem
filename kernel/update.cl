@@ -23,7 +23,11 @@ void kernel update_position(__global Particle *particles, __constant float2 *gra
 	dir = (gc - particles->position);	
 	r = fast_length(dir);
 	if (r <= GRAV_RADIUS)
+	{
+		particles->velocity += (float3)0.01f;
+		particles->position += particles->velocity;
 		return ;
+	}
 	// fast_normalize(dir);
 	// fast_normalize(dir);
 	force = ATTRACT / (r * r);
@@ -31,6 +35,9 @@ void kernel update_position(__global Particle *particles, __constant float2 *gra
 	// 	particles->velocity *= (float3)0.001f * force;	
 	if (!particles->velocity.x)
 		particles->velocity = float3(0.0001f, 0.0001f, 0);
+	float tmp = fast_length(dir);
+	if (tmp > 1.5f)
+		particles->position = gc;
 	// else
 	// {
 	// 	orbital_speed = sqrt((0.24f * G) / r);
@@ -44,9 +51,9 @@ void kernel update_position(__global Particle *particles, __constant float2 *gra
 	// particles->velocity *= (float3)0.4;
 	// particles->position += -dir * force;
 	// dist *= 0.42f;
-	// particles->color.x *= particles->velocity.x;
-	// particles->color.y = 10 * particles->velocity.y;
-	// particles->color.z = gravityCenter->y;
+	particles->color.z = (len - 0.015591) / 0.091556;
+	particles->color.x = tmp * 0.75f;
+	// particles->color.x = clamp(particles->color.x, 0.2f, 0.8f);
 	// getParticleColor(dist, particles->position);
 	// particles->velocity *= 0.8f;
 }

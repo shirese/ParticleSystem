@@ -12,8 +12,8 @@ ParticleManager::ParticleManager()
     // Bind VBO
     glBindBuffer(GL_ARRAY_BUFFER, m_posVBO);
     // Alloc VBO
-    glBufferData(GL_ARRAY_BUFFER, (GLuint)PARTICLES_COUNT * sizeof(Particle), 
-        nullptr, (GLuint)GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, (GLuint)PARTICLES_COUNT * sizeof(Particle),
+                nullptr, (GLuint)GL_STATIC_DRAW);
     printf("[%lu]\n", sizeof(Particle));
 }
 

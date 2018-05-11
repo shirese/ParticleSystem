@@ -6,7 +6,7 @@
 #    By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/02/21 10:54:15 by chaueur           #+#    #+#              #
-#    Updated: 2018/05/01 14:27:42 by chaueur          ###   ########.fr        #
+#    Updated: 2018/05/11 15:56:03 by chaueur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,8 @@ SRC				= $(SRC_MAIN)
 
 OBJ				= $(addprefix $(DIR_OBJ),$(OBJS))
 
+DEP				= $(OBJ:.o=.d)
+
 VPATH			= $(DIR_SRC)
 
 LIBFTPRINTF		= ft_printf/libftprintf.a
@@ -54,7 +56,7 @@ $(LIBFTPRINTF):
 
 $(DIR_OBJ)%.o: %.cpp
 	@mkdir $(DIR_OBJ) 2> /dev/null || true
-	$(CC) $(FLAG) $(INCS) -o $@ -c $<
+	$(CC) $(FLAG) $(INCS) -o $@ -c $< -MMD -MP
 
 clean:
 	@make -C ft_printf/ clean
@@ -66,5 +68,7 @@ fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
+
+-include $(DEP)
 
 .PHONE: all, clean, fclean, re
