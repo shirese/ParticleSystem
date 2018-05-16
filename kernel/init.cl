@@ -11,14 +11,14 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 	{
 		float theta = GA * (float)i;
 		float z = Z_HELPER * ( 1.0 - ( (2. * (float)i) / ( (float)PARTICLES_COUNT - 1.0 ) ) );
-		float radius = sqrt(1.0	 - z * z);
+		float radius = sqrt(1.0 - z * z);
 		dir.x = radius * cos(theta);
 		dir.y = radius * sin(theta);
 		dir.z = z;
 		dir = particles->position - dir;
 		// if (distance(test, particles->position) == 0)
 		// 	*shape = 0;
-		particles->position = (float3)0.4 * dir;
+		particles->position = (float3)0.6 * dir;
 	}
 	else if (*shape == 2)
 	{
@@ -35,7 +35,7 @@ void kernel initialize(__global Particle *particles, __global short *shape)
 		// test = (float3)0.4 * dir;
 		// if (distance(test, particles->position) == 0)
 		// 	*shape = 0;
-		particles->position = (float3)0.4 * dir;
+		particles->position = (float3)0.6 * dir;
 	}
 	//float phi = ( sqrt(5.f) + 1.f ) / 2.f - 1.f; // golden ratio
 	//float ga = phi * 2.f * M_PI;

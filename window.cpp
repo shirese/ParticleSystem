@@ -6,15 +6,15 @@
 /*   By: chaueur <chaueur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 11:40:14 by chaueur           #+#    #+#             */
-/*   Updated: 2018/05/11 18:24:02 by chaueur          ###   ########.fr       */
+/*   Updated: 2018/05/16 17:07:47 by chaueur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "window.h"
 
 Window::Window() : initShape(1),
-                   m_width(1280),
-                   m_height(1050),
+                   m_width(1920),
+                   m_height(1080),
                    m_frameCount(0),
                    m_framePerSec(0),
                    m_currTime(0),
